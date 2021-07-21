@@ -1,0 +1,102 @@
+#wrapper {
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+body {
+	display: flex;
+	flex-flow: column;
+	width: 600px;
+	height: 400px;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#current {
+	color: white;
+	background-color: #007bff;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	width: 100%;
+	height: 90%;
+}
+
+#schedule {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	justify-content: center;
+	text-align: center;
+	width: 100%;
+}
+
+#content,
+#schedulewrap {
+	margin: 25px;
+}
+
+.center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.big {
+	font-size: 250%;
+}
+
+#content span {
+	display: inline-block;
+}
+
+#end_time {
+	font-size: 150%;
+	padding: 20px 0;
+	font-weight: bold;
+}
+
+#table {
+	border-collapse: collapse;
+	-webkit-box-shadow: 3px 3px 10px 2px rgba(0, 0, 0, 0.1);
+	box-shadow: 3px 3px 10px 2px rgba(0, 0, 0, 0.1);
+	border: none;
+	width: 100%;
+}
+
+#table,
+#tabletitle {
+	display: none;
+}
+
+#scroll {
+	font-size: 125%;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+}
+
+#tabletitle {
+	font-size: 200%;
+	margin: 10px;
+	display: inline-block;
+}
+
+#table tr {
+	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#table th,
+#table td {
+	padding: 15px 10px;
+	text-align: left;
+}
