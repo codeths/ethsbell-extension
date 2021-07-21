@@ -70,14 +70,13 @@ body {
 	width: 100%;
 }
 
-#table,
-#tabletitle {
+#schedulewrap,
+#scroll {
 	display: none;
 }
 
 #scroll {
 	font-size: 125%;
-	display: flex;
 	justify-content: center;
 	flex-direction: column;
 	width: 100%;

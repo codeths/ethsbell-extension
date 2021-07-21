@@ -7,6 +7,8 @@ const scheduleSelect = document.querySelector('#schedule-select');
 const dateSelect = document.querySelector('#date-select');
 const calendarTable = document.querySelector('#calendar-table');
 const tableTitle = document.querySelector('#tabletitle');
+const scrollElement = document.querySelector('#scroll');
+const scheduleWrap = document.querySelector('#schedulewrap');
 let currentSchedule = {};
 
 // Gets data from /today/now/near
@@ -60,11 +62,13 @@ async function getToday() {
 
     currentSchedule = day;
 
+    if (day.periods.length == 0) return;
     buildTable(day.periods);
-    tableElement.style.display = 'table';
+
+    scrollElement.style.display = 'flex';
+    scheduleWrap.style.display = 'block';
 
     tableTitle.innerText = `${day.friendly_name} Schedule`
-    tableTitle.style.display = 'inline-block';
 }
 
 getToday();
