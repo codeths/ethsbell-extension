@@ -12,13 +12,23 @@ let currentSchedule = {};
 // Gets data from /today/now/near
 function display(data) {
     if (data[1]) {
-        const names = data[1].map(period => period.friendly_name);
-        const ends = data[1].map(period => `${human_time(period.end)} (in ${human_time_left(period.end)})`);
-        periodText.textContent = `${human_list(names)} ${data[1].length > 1 ? 'end' : 'ends'} at`;
+        if (data[1][0].kind == "AfterSchool") {
+            periodText.textContent = '';
+            endTimeText.textContent = 'School\'s out!';
+            nextText.textContent = '';
+        } else if (data[1][0].kind == "BeforeSchool") {
+            periodText.textContent = '';
+            endTimeText.textContent = 'School hasn\'t started yet!';
+            nextText.textContent = '';
+        } else {
+            const names = data[1].map(period => period.friendly_name);
+            const ends = data[1].map(period => `${human_time(period.end)} (in ${human_time_left(period.end)})`);
+            periodText.textContent = `${human_list(names)} ${data[1].length > 1 ? 'end' : 'ends'} at`;
 
-        endTimeText.textContent = ends.every(value => value === ends[0]) ? `${ends[0]}` : `${human_list(ends)}${data[1].length > 1 ? ', respectively.' : '.'}`;
+            endTimeText.textContent = ends.every(value => value === ends[0]) ? `${ends[0]}` : `${human_list(ends)}${data[1].length > 1 ? ', respectively.' : '.'}`;
 
-        nextText.textContent = data[2] ? `The next period is ${data[2].friendly_name}, which ends at ${human_time(data[2].end)}` : 'This is the last period.';
+            nextText.textContent = data[2] ? `The next period is ${data[2].friendly_name}, which ends at ${human_time(data[2].end)}` : 'This is the last period.';
+        }
     } else {
         periodText.textContent = 'There is no current period.';
         endTimeText.textContent = '';
