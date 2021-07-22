@@ -1,6 +1,7 @@
 const form = document.getElementById('option-form');
 const enabledInput = document.getElementById('notifs-enabled');
 const offsetInput = document.getElementById('notifs-offset');
+const testButton = document.getElementById('test');
 
 (async () => {
     const settings = await getNotificationSettings();
@@ -41,3 +42,9 @@ async function setNotificationSettings(settings) {
         });
     });
 }
+
+testButton.addEventListener('click', async (e) => {
+    chrome.extension.sendRequest({
+        message: "test"
+    });
+});
