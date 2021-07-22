@@ -13,7 +13,7 @@
 		"scripts": ["src/background/background.js", "src/browser_action/helpers.js"]
 	},
 	"default_locale": "en",
-	"options_page": "src/options_custom/index.html",
+	"options_page": "/options/index.html",
 	"browser_action": {
 		"default_icon": "icons/icon128.png",
 		"default_title": "ETHSBell",
