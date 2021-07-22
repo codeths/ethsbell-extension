@@ -103,3 +103,28 @@ function date_to_string(date) {
     console.log(date);
     return `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
 }
+
+async function getNotificationOffset() {
+    return new Promise(async (resolve, reject) => {
+        chrome.storage.sync.get(['enabled', 'offset'], (data) => {
+            if (!data.enabled) return resolve(null);
+            return resolve(data.offset ?? null);
+        });
+    });
+}
+
+async function setNotificationOffset(offset) {
+    return new Promise(async (resolve, reject) => {
+        chrome.storage.sync.set({ offset }, () => {
+            return resolve();
+        });
+    });
+}
+
+async function setNotificationEnabled(enabled) {
+    return new Promise(async (resolve, reject) => {
+        chrome.storage.sync.set({ enabled }, () => {
+            return resolve();
+        });
+    });
+}
