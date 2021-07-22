@@ -17,8 +17,8 @@ form.addEventListener('submit', async (e) => {
         offset: offsetInput.valueAsNumber || null
     });
 
-    chrome.extension.sendRequest({
-        message: "reload"
+    chrome.extension.sendMessage({
+        message: "reload-force"
     });
 
     alert('Saved.');
@@ -44,7 +44,7 @@ async function setNotificationSettings(settings) {
 }
 
 testButton.addEventListener('click', async (e) => {
-    chrome.extension.sendRequest({
+    chrome.extension.sendMessage({
         message: "test"
     });
 });
