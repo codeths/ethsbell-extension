@@ -1,0 +1,25 @@
+body {
+	background-color: #eeeeee;
+	padding: 5px;
+	font-family: sans-serif;
+}
+
+.option {
+	font-size: 20px;
+	padding: 5px 0px;
+}
+
+.option input[type="checkbox"] {
+	width: 15px;
+	height: 15px;
+	vertical-align: middle;
+}
+
+.option input[type="text"] {
+	height: 15px;
+	vertical-align: middle;
+}
+
+#notifs-offset {
+	width: 40px;
+}

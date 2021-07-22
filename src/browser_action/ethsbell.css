@@ -100,3 +100,14 @@ body {
 #timeline, #timeline>svg {
 	width: 100%;
 }
+
+#buttons {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 15px;
+}
+
+#buttons a {
+	padding: 5px;
+}
