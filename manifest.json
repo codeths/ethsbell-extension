@@ -9,6 +9,9 @@
 		"48": "icons/icon48.png",
 		"128": "icons/icon128.png"
 	},
+	"background": {
+		"scripts": ["src/background/background.js", "src/browser_action/helpers.js"]
+	},
 	"default_locale": "en",
 	"options_page": "src/options_custom/index.html",
 	"browser_action": {
@@ -18,7 +21,11 @@
 	},
 	"permissions": [
 		"notifications",
+		"storage",
+		"alarms",
+		"https://ethsbell.com/*",
 		"https://ethsbell.xyz/*",
+		"https://codeths.eths.k12.il.us/*",
 		"http://localhost:8000/*"
 	]
 }
