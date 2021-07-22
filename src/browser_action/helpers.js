@@ -100,7 +100,6 @@ function human_time_left(endTime, startTime = null, short = false) {
 
 // Convert date object to YYYY-MM-DD
 function date_to_string(date) {
-    console.log(date);
     return `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
 }
 
@@ -125,6 +124,23 @@ async function setNotificationEnabled(enabled) {
     return new Promise(async (resolve, reject) => {
         chrome.storage.sync.set({ enabled }, () => {
             return resolve();
+        });
+    });
+}
+
+async function saveLastKnownData(lastFetchedData) {
+    return new Promise(async (resolve, reject) => {
+        chrome.storage.local.set({ lastFetchedData }, () => {
+            return resolve();
+        });
+    });
+}
+
+async function didDataChange(newData) {
+    return new Promise(async (resolve, reject) => {
+        chrome.storage.local.get(["lastFetchedData"], (lastFetchedData) => {
+            if (!lastFetchedData) return resolve(true);
+            return resolve(lastFetchedData == newData);
         });
     });
 }

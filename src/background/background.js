@@ -1,11 +1,16 @@
 // Set timers for the period end times
-async function setTimers() {
+async function setTimers(force = false) {
 
     const offset = await getNotificationOffset();
     if (offset == null) return;
 
     const apidata = await get('/api/v1/today');
     if (!apidata) return;
+
+    if (!force) {
+        const didChange = await didDataChange(apidata);
+        if (!didChange) return;
+    }
 
     await clearNotificationAlarms();
 
@@ -125,11 +130,14 @@ chrome.runtime.onInstalled.addListener(function (d) {
     setTimers();
 });
 
-chrome.extension.onRequest.addListener((request, sender, sendResponse) => {
-    if (request.message == 'reload') {
+chrome.extension.onMessage.addListener((message) => {
+    if (message.message == 'reload') {
         setTimers();
     }
-    if (request.message == 'test') {
+    if (message.message == 'test') {
         runManual();
+    }
+    if (message.message == 'reload-force') {
+        setTimers(true);
     }
 });
