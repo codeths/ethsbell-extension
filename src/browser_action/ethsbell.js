@@ -36,8 +36,8 @@ async function display(data) {
         endTimeText.textContent = '';
         nextText.textContent = '';
     }
-	all_data = await get('/api/v1/today').then(v => v.periods);
-	place_boxes(all_data);
+    all_data = await get('/api/v1/today').then(v => v.periods);
+    place_boxes(all_data);
 }
 
 go();
@@ -74,3 +74,7 @@ async function getToday() {
 }
 
 getToday();
+
+chrome.extension.sendMessage({
+    message: "reload"
+});
