@@ -1,12 +1,13 @@
 // Set timers for the period end times
 async function setTimers() {
-    await clearNotificationAlarms();
 
     const offset = await getNotificationOffset();
     if (offset == null) return;
 
     const apidata = await get('/api/v1/today');
     if (!apidata) return;
+
+    await clearNotificationAlarms();
 
     for (let [i, period] of apidata.periods.entries()) {
         const endtime = (period.end_timestamp - (offset * 60)) * 1000;
@@ -18,6 +19,7 @@ async function setTimers() {
     }
 }
 
+// Clear all notification timers
 async function clearNotificationAlarms() {
     return new Promise(async (resolve, reject) => {
         chrome.alarms.getAll(async (alarms) => {
@@ -31,6 +33,7 @@ async function clearNotificationAlarms() {
     });
 }
 
+// Clear alarm by name (promisified)
 async function clearAlarm(name) {
     return new Promise(async (resolve, reject) => {
         chrome.alarms.clear(name, () => { return resolve(); })
@@ -62,6 +65,11 @@ async function runNotification(index, name) {
     const period = apidata.periods[index];
     if (!period) return;
     if (period.friendly_name !== name) return;
+
+    const endTime = period.end_timestamp * 1000;
+    const now = Date.now();
+    const timeLeftInMinutes = (endTime - now) / 1000 / 60 / 60;
+    if (timeLeftInMinutes < -1) return;
 
     chrome.notifications.create('', {
         type: 'basic',
