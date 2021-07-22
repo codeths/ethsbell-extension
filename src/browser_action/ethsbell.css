@@ -18,14 +18,15 @@ body {
 #current {
 	color: white;
 	background-color: #007bff;
+	width: 100%;
+	height: 90%;
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	flex: 1;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
-	width: 100%;
-	height: 90%;
 }
 
 #schedule {
@@ -37,7 +38,8 @@ body {
 	width: 100%;
 }
 
-#content, #schedulewrap {
+#content,
+#schedulewrap {
 	margin: 25px;
 }
 
@@ -48,7 +50,7 @@ body {
 }
 
 .big {
-	font-size: 250%;
+	font-size: 200%;
 }
 
 #content span {
@@ -69,7 +71,8 @@ body {
 	width: 100%;
 }
 
-#schedulewrap, #scroll {
+#schedulewrap,
+#scroll {
 	display: none;
 }
 
@@ -92,12 +95,14 @@ body {
 	border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-#table th, #table td {
+#table th,
+#table td {
 	padding: 15px 10px;
 	text-align: left;
 }
 
-#timeline, #timeline>svg {
+#timeline,
+#timeline > svg {
 	width: 100%;
 }
 
@@ -106,6 +111,7 @@ body {
 	top: 0;
 	right: 0;
 	padding: 15px;
+	text-align: right;
 }
 
 #buttons a {
