@@ -37,8 +37,7 @@ body {
 	width: 100%;
 }
 
-#content,
-#schedulewrap {
+#content, #schedulewrap {
 	margin: 25px;
 }
 
@@ -70,8 +69,7 @@ body {
 	width: 100%;
 }
 
-#schedulewrap,
-#scroll {
+#schedulewrap, #scroll {
 	display: none;
 }
 
@@ -94,8 +92,11 @@ body {
 	border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-#table th,
-#table td {
+#table th, #table td {
 	padding: 15px 10px;
 	text-align: left;
+}
+
+#timeline, #timeline>svg {
+	width: 100%;
 }

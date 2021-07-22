@@ -12,7 +12,7 @@ const scheduleWrap = document.querySelector('#schedulewrap');
 let currentSchedule = {};
 
 // Gets data from /today/now/near
-function display(data) {
+async function display(data) {
     if (data[1]) {
         if (data[1][0].kind == "AfterSchool") {
             periodText.textContent = '';
@@ -36,6 +36,8 @@ function display(data) {
         endTimeText.textContent = '';
         nextText.textContent = '';
     }
+	all_data = await get('/api/v1/today').then(v => v.periods);
+	place_boxes(all_data);
 }
 
 go();
