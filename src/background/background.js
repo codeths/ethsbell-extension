@@ -14,14 +14,13 @@ async function setTimers(force = false) {
 
 	await clearNotificationAlarms();
 
-	for (let [i, period] of apidata.periods.entries()) {
-		const endtime = (period.end_timestamp - (offset * 60)) * 1000;
-		if (endtime > new Date().getTime()) {
-			chrome.alarms.create(`Notify_${i}_${period.friendly_name}`, {
-				when: endtime
-			});
-		}
-	}
+	const endTimes = apidata.periods.map(period => (period.end_timestamp - (offset * 60)) * 1000).filter((timestamp, pos, array) => timestamp > new Date().getTime() && array.indexOf(timestamp) == pos);
+
+	endTimes.forEach((timestamp) => {
+		chrome.alarms.create(`Notify-${timestamp}`, {
+			when: timestamp
+		});
+	});
 }
 
 // Clear all notification timers
@@ -47,31 +46,35 @@ async function clearAlarm(name) {
 
 // Manual run
 async function runManual() {
-	const apidata = await get('/api/v1/today/now');
-	if (!apidata) return;
-	if (!apidata[0]) return chrome.notifications.create('', {
-		type: 'basic',
-		iconUrl: '/icons/icon128.png',
-		title: 'ETHSBell Notification',
-		message: 'There is no period right now.'
-	});
 	chrome.notifications.create('', {
 		type: 'basic',
 		iconUrl: '/icons/icon128.png',
-		...getNotificationMessage(apidata[0])
+		title: 'ETHSBell Notification',
+		message: 'Notifications work!'
 	});
 }
 
+function findApplicablePeriodEnds(periods, timestamp, offset = null) {
+	return periods.filter(x => (x.end_timestamp + 60) * 1000 >= timestamp && (offset == null || (x.end_timestamp - (60 * offset)) * 1000 <= timestamp)).sort((a, b) => a.end_timestamp - b.end_timestamp);
+}
+
 // Run notification
-async function runNotification(index, name) {
-	const apidata = await get('/api/v1/today');
-	if (!apidata) return;
+async function runNotification(timestamp = new Date().getTime(), mockTime) {
+	const today = await get(`/api/v1/today${mockTime ? `?timestamp=${Math.floor(mockTime / 1000)}` : ''}`);
+	if (!today || !today.periods || !today.periods[0]) return;
 
-	const period = apidata.periods[index];
-	if (!period) return;
-	if (period.friendly_name !== name) return;
+	const offset = await getNotificationOffset();
+	if (offset == null) return;
 
-	const endTime = period.end_timestamp * 1000;
+	const currentPeriods = findApplicablePeriodEnds(today.periods, timestamp, offset);
+	if (!currentPeriods || !currentPeriods[0]) return;
+
+	const nowPeriods = findApplicablePeriodEnds(today.periods, mockTime || new Date().getTime(), offset);
+	if (JSON.stringify(nowPeriods) !== JSON.stringify(currentPeriods)) return;
+
+	const periods = today.periods.filter(p => p.end_timestamp == currentPeriods[0].end_timestamp);
+
+	const endTime = currentPeriods.end_timestamp * 1000;
 	const now = Date.now();
 	const timeLeftInMinutes = (endTime - now) / 1000 / 60 / 60;
 	if (timeLeftInMinutes < -1) return;
@@ -79,14 +82,13 @@ async function runNotification(index, name) {
 	chrome.notifications.create('', {
 		type: 'basic',
 		iconUrl: '/icons/icon128.png',
-		...getNotificationMessage(period)
+		...getNotificationMessage(currentPeriods[0], human_list(periods.map(x => x.friendly_name)), mockTime)
 	});
 }
 
-function getNotificationMessage(period) {
-	const name = period.friendly_name;
+function getNotificationMessage(period, name, now) {
 	const endTime = new Date(period.end_timestamp * 1000);
-	const timeLeft = Math.ceil((endTime.getTime() - Date.now()) / 1000 / 60);
+	const timeLeft = Math.ceil((endTime.getTime() - (now || Date.now())) / 1000 / 60);
 	const endTimeString = endTime.toLocaleTimeString('en-US', { hour: "numeric", minute: "2-digit" });
 	return {
 		title: `Period ending in ${timeLeft} ${plural_suffix(timeLeft, 'minute')}`,
@@ -96,7 +98,7 @@ function getNotificationMessage(period) {
 
 // When alarm goes off
 
-chrome.alarms.onAlarm.addListener(function (alarm) {
+chrome.alarms.onAlarm.addListener((alarm) => {
 	//Refresh data
 	if (alarm.name == 'PullData') {
 		setTimers();
@@ -104,11 +106,8 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 	}
 
 	//Period notifier
-	if (alarm.name.startsWith('Notify')) {
-		const split = alarm.name.split('_');
-		const index = parseInt(split[1]);
-		const name = split.slice(2).join('_');
-		runNotification(index, name);
+	if (alarm.name.startsWith('Notify-')) {
+		runNotification(alarm.scheduledTime);
 	}
 });
 
@@ -123,10 +122,10 @@ async function setPullDataAlarm() {
 	});
 }
 
-chrome.runtime.onStartup.addListener(function () {
+chrome.runtime.onStartup.addListener(() => {
 	setTimers();
 });
-chrome.runtime.onInstalled.addListener(function (d) {
+chrome.runtime.onInstalled.addListener(() => {
 	setTimers();
 });
 
