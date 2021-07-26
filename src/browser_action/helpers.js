@@ -25,8 +25,38 @@ async function go() {
         return;
     }
 
+    data = process(data);
     lastFetchedData = data;
     display(data);
+}
+
+function replace_period(period) {
+    if (!period) return period;
+    if (Array.isArray(period)) {
+        return period.map(replace_period);
+    }
+
+    if (period.kind?.Class || period.kind?.ClassOrLunch) {
+        const class_id = period.kind.Class || period.kind.ClassOrLunch;
+        /*const class_cfg = config[class_id];
+        if (class_cfg) {
+            period.friendly_name = class_cfg.name;
+            period.url = class_cfg.url;
+        }*/
+
+        return period;
+    }
+
+    return period;
+}
+
+function process(data) {
+    // TODO: This will perform class name replacements
+    /*if (config) {
+        return data.map(replace_period);
+    }*/
+
+    return data;
 }
 
 function human_list(items) {
