@@ -14,7 +14,7 @@ form.addEventListener('submit', async (e) => {
 
 	await setNotificationSettings({
 		enabled: enabledInput.checked,
-		offset: offsetInput.valueAsNumber || null
+		offset: offsetInput.valueAsNumber ?? null
 	});
 
 	chrome.extension.sendMessage({
