@@ -32,8 +32,8 @@ async function display(data) {
 			nextText.textContent = data[2] ? `The next period is ${data[2].friendly_name}, which ends at ${human_time(data[2].end)}` : 'This is the last period.';
 		}
 	} else {
-		periodText.textContent = 'There is no current period.';
-		endTimeText.textContent = '';
+		periodText.textContent = '';
+		endTimeText.textContent = 'No School';
 		nextText.textContent = '';
 	}
 	all_data = await get('/api/v1/today').then(v => v.periods);
