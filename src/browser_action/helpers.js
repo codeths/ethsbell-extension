@@ -1,5 +1,4 @@
-const API_BASE = "http://localhost:8000";
-// const API_BASE = "https://codeths.eths.k12.il.us";
+const API_BASE = "https://codeths.eths.k12.il.us";
 let lastFetchedData = null;
 
 async function get(endpoint = '/api/v1/today/now/near') {
