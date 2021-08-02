@@ -11,6 +11,7 @@ async function setTimers(force = false) {
 		const didChange = await didDataChange(apidata);
 		if (!didChange) return;
 	}
+	await saveLastKnownData(apidata);
 
 	await clearNotificationAlarms();
 
