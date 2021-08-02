@@ -142,3 +142,5 @@ chrome.runtime.onMessage.addListener((message) => {
 		setTimers(true);
 	}
 });
+
+setTimers();
