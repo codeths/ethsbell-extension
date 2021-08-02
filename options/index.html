@@ -17,16 +17,19 @@
 		<div id="wrapper">
 			<form id="option-form">
 				<div class="option">
-					<input type="checkbox" id="notifs-enabled" />
-					<label for="notifs-enabled">Enable Notifications</label>
+					<span>
+						<input type="checkbox" id="notifs-enabled" />
+						<label for="notifs-enabled">Enable Notifications</label>
+					</span>
 				</div>
 				<div class="option">
-					<label for="notifs-offset">Send notifications</label>
-					<input type="number" id="notifs-offset" min="0" />
-					<label for="notifs-offset">minute(s) before period end</label>
+					<span>
+						<label for="notifs-offset">Send notifications</label>
+						<input type="number" id="notifs-offset" min="0" />
+						<label for="notifs-offset">minute(s) before period end</label>
+					</span>
 				</div>
-				<input type="submit" value="Save" />
-				<button id="test" type="button">Send Test Notification</button>
+				<input id="save" type="submit" value="Save" />
 			</form>
 		</div>
 		<script src="settings.js"></script>
