@@ -167,9 +167,17 @@ async function saveLastKnownData(lastFetchedData) {
 
 async function didDataChange(newData) {
 	return new Promise(async (resolve, reject) => {
-		chrome.storage.local.get(["lastFetchedData"], (lastFetchedData) => {
+		chrome.storage.local.get(["lastFetchedData"], ({ lastFetchedData }) => {
 			if (!lastFetchedData) return resolve(true);
-			return resolve(lastFetchedData == newData);
+			return resolve(!isJSONEqual(lastFetchedData, newData));
 		});
 	});
+}
+
+function isJSONEqual(...objects) {
+	let keys = Object.keys(objects[0]);
+	// Check if objects have the same keys
+	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) return false;
+	// Check if objects have the same values
+	return objects.every(obj => keys.every(key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] == 'object' ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key])));
 }
