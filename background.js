@@ -1,3 +1,4 @@
+importScripts("/src/helpers.js");
 // Set timers for the period end times
 async function setTimers(force = false) {
 
@@ -130,7 +131,7 @@ chrome.runtime.onInstalled.addListener(() => {
 	setTimers();
 });
 
-chrome.extension.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener((message) => {
 	if (message.message == 'reload') {
 		setTimers();
 	}
