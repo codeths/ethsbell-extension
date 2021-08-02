@@ -1,7 +1,7 @@
 {
 	"name": "ETHSBell",
-	"version": "1.0.0",
-	"manifest_version": 2,
+	"version": "2.0.0",
+	"manifest_version": 3,
 	"description": "A Chrome Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.xyz",
 	"icons": {
@@ -10,19 +10,17 @@
 		"128": "icons/icon128.png"
 	},
 	"background": {
-		"scripts": ["src/background/background.js", "src/browser_action/helpers.js"]
+		"service_worker": "background.js"
 	},
 	"default_locale": "en",
 	"options_page": "/options/index.html",
-	"browser_action": {
+	"action": {
 		"default_icon": "icons/icon128.png",
 		"default_title": "ETHSBell",
 		"default_popup": "src/browser_action/browser_action.html"
 	},
-	"permissions": [
-		"notifications",
-		"storage",
-		"alarms",
+	"permissions": ["notifications", "storage", "alarms"],
+	"host_permissions": [
 		"https://ethsbell.com/*",
 		"https://ethsbell.xyz/*",
 		"https://codeths.eths.k12.il.us/*",
