@@ -2,7 +2,7 @@ const API_BASE = "https://codeths.eths.k12.il.us";
 let lastFetchedData = null;
 
 async function get(endpoint = '/api/v1/today/now/near') {
-	return fetch(`${API_BASE}${endpoint}${window.location.search}`)
+	return fetch(`${API_BASE}${endpoint}${typeof window !== "undefined" ? window.location.search : ''}`)
 		.then(x => x.json()
 			.catch(() => null))
 		.catch(() => null);
@@ -86,9 +86,11 @@ function plural_suffix(number, string) {
 // Gets current date
 // If timestamp query string is provided, that is used instead of current.
 function current_date() {
-	const timestampQueryString = new URLSearchParams(window.location.search).get('timestamp');
-	if (timestampQueryString) {
-		return new Date(Number.parseInt(timestampQueryString, 10) * 1000);
+	if (typeof window !== "undefined") {
+		const timestampQueryString = new URLSearchParams(window.location.search).get('timestamp');
+		if (timestampQueryString) {
+			return new Date(Number.parseInt(timestampQueryString, 10) * 1000);
+		}
 	}
 
 	return new Date();
