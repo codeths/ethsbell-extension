@@ -12,15 +12,8 @@ body {
 	justify-content: center;
 }
 
-.option label {
-	display: inline-block;
-}
-
-.option input[type="checkbox"] {
-	vertical-align: middle;
-}
-
-.option input[type="text"] {
+.option label,
+.option input {
 	vertical-align: middle;
 }
 
