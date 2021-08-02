@@ -42,9 +42,3 @@ async function setNotificationSettings(settings) {
 		});
 	});
 }
-
-testButton.addEventListener('click', async (e) => {
-	chrome.extension.sendMessage({
-		message: "test"
-	});
-});
