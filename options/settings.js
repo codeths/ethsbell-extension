@@ -2,6 +2,7 @@ const form = document.getElementById('option-form');
 const enabledInput = document.getElementById('notifs-enabled');
 const offsetInput = document.getElementById('notifs-offset');
 const testButton = document.getElementById('test');
+const banner = document.getElementById('banner');
 
 (async () => {
 	const settings = await getNotificationSettings();
@@ -17,11 +18,11 @@ form.addEventListener('submit', async (e) => {
 		offset: offsetInput.valueAsNumber ?? null
 	});
 
-	chrome.extension.sendMessage({
+	chrome.runtime.sendMessage({
 		message: "reload-force"
 	});
 
-	alert('Saved.');
+	showBanner('Saved.', '#3ca658');
 	return false;
 });
 
@@ -41,4 +42,14 @@ async function setNotificationSettings(settings) {
 			return resolve();
 		});
 	});
+}
+
+function showBanner(text, color, textColor = '#ffffff', time = 7 * 1000) {
+	banner.innerText = text;
+	banner.style.backgroundColor = color;
+	banner.style.color = textColor;
+	banner.style.display = 'block';
+	setTimeout(() => {
+		banner.style.display = '';
+	}, time);
 }

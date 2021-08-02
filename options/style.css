@@ -31,3 +31,11 @@ body {
 #save {
 	margin-top: 10px;
 }
+
+#banner {
+	padding: 10px;
+	margin: 10px 0px;
+	border-radius: 5px;
+	display: none;
+	font-size: 14px;
+}
