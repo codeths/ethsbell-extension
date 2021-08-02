@@ -75,6 +75,6 @@ async function getToday() {
 
 getToday();
 
-chrome.extension.sendMessage({
+chrome.runtime.sendMessage({
 	message: "reload"
 });
