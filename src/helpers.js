@@ -1,4 +1,4 @@
-const API_BASE = "https://codeths.eths.k12.il.us";
+const API_BASE = "http://localhost:8000";
 let lastFetchedData = null;
 
 async function get(endpoint = '/api/v1/today/now/near') {
@@ -98,7 +98,7 @@ function current_date() {
 
 function date_from_api(time, now = current_date()) {
 	const [h, m, s] = time.split(':');
-	const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
+	const date = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), h, m, s);
 	return date;
 }
 
@@ -130,8 +130,8 @@ function human_time_left(endTime, startTime = null, short = false) {
 }
 
 // Convert date object to YYYY-MM-DD
-function date_to_string(date) {
-	return `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
+function date_to_string(date = current_date()) {
+	return `${date.getUTCFullYear()}-${('0' + (date.getUTCMonth() + 1)).slice(-2)}-${('0' + date.getUTCDate()).slice(-2)}`;
 }
 
 async function getNotificationOffset() {
@@ -182,4 +182,44 @@ function isJSONEqual(...objects) {
 	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) return false;
 	// Check if objects have the same values
 	return objects.every(obj => keys.every(key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] == 'object' ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key])));
+}
+
+
+// Writes a period to an element and its children
+function put_period_to_element(element, period) {
+	if (period) {
+		if (period.kind === 'BeforeSchool') {
+			element.innerHTML = 'School hasn\'t started yet!';
+		} else if (period.kind === 'AfterSchool') {
+			element.innerHTML = 'School\'s out!';
+		} else {
+			const start = element.querySelector('.start');
+			const start_in = element.querySelector('.start_in');
+			const end = element.querySelector('.end');
+			const end_in = element.querySelector('.end_in');
+			const name = element.querySelector('.name');
+
+			if (start) {
+				start.innerHTML = human_time(period.start);
+			}
+
+			if (start_in) {
+				start_in.innerHTML = human_time_left(period.start, undefined, true);
+			}
+
+			if (end) {
+				end.innerHTML = human_time(period.end);
+			}
+
+			if (end_in) {
+				end_in.innerHTML = human_time_left(period.end, undefined, true);
+			}
+
+			if (name) {
+				name.innerHTML = period.url ? `<a href="${period.url}">${period.friendly_name}</a>` : period.friendly_name;
+			}
+		}
+	} else {
+		element.innerHTML = 'No School';
+	}
 }

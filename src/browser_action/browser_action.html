@@ -6,7 +6,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>ETHSBell</title>
 		<link rel="stylesheet" href="ethsbell.css" />
-		<script src="timeline.js"></script>
 	</head>
 
 	<body>
@@ -23,84 +22,38 @@
 						><img src="/icons/launch.svg"
 					/></a>
 				</div>
-				<div class="big block text-center" id="content">
-					<span id="period"></span>
-					<br />
-					<span id="end_time"></span>
-					<br />
-					<span id="next"></span>
+				<div class="big block text-center content">
+					<span id="schedulename"></span>
+					<template id="current_period_time_template">
+						<span class="name"></span> ends at <b class="end"></b> (in
+						<b class="end_in"></b>).
+					</template>
+					<div class="content">
+						<div class="big" id="current_parent"></div>
+						<div id="next_parent">
+							<div class="divider"></div>
+							<div class="bigish" id="next_period">
+								The next period is <span class="name"></span>, which ends at
+								<span class="end"></span>.
+							</div>
+						</div>
+					</div>
+
+					<div id="progress_parent"></div>
 				</div>
 			</div>
 			<span id="scroll">Scroll down for schedule</span>
-			<div id="schedule">
-				<div id="timeline">
-					<div class="text-center">
-						<br /><br />
-						showing
-						<input
-							type="number"
-							id="timeline_length"
-							step=".1"
-							class="timeline_prop"
-							title="Length of the displayed timeline in hours"
-							value="6"
-						/>
-						hours, offset by
-						<input
-							type="number"
-							id="timeline_offset"
-							step=".1"
-							class="timeline_prop"
-							title="Offset of the displayed timeline in hours"
-							value="0"
-						/>
-						hours.
-						<br />
-					</div>
-					<template id="period_box">
-						<g>
-							<rect
-								x="X%"
-								y="Y"
-								width="W%"
-								height="H"
-								rx="5"
-								fill="COLOR"
-							></rect>
-							<text x="TX" y="TY" font-size="TH" fill="black">CONTENT</text>
-						</g>
-					</template>
-					<svg height="110">
-						<g id="boxes" stroke="black" stroke-width="2"></g>
-						<g stroke="black" rx="5px" ry="5px">
-							<line x1="0" y1="5" x2="100%" y2="5" />
-							<line x1="0" y1="55" x2="100%" y2="55" stroke="#a0a0a0" />
-							<line x1="0" y1="105" x2="100%" y2="105" />
-							<line x1="50%" y1="5" x2="50%" y2="105" />
-							<line x1="49%" y1="0" x2="50%" y2="5" />
-							<line x1="51%" y1="0" x2="50%" y2="5" />
-							<line x1="49%" y1="110" x2="50%" y2="105" />
-							<line x1="51%" y1="110" x2="50%" y2="105" />
-						</g>
-					</svg>
+			<div id="calendar-wrapper">
+				<div id="calendar-today">
+					<div id="now"></div>
+					<div id="event-wrapper"></div>
 				</div>
-				<div id="schedulewrap">
-					<span id="tabletitle"></span>
-					<br />
-					<table id="table">
-						<thead>
-							<tr>
-								<th>Period</th>
-								<th>Time</th>
-								<th>Duration</th>
-							</tr>
-						</thead>
-						<tbody id="tbody"></tbody>
-					</table>
-				</div>
+				<div id="calendar-table"></div>
 			</div>
 		</div>
 		<script src="../helpers.js"></script>
+		<script src="../progress.js"></script>
+		<script src="../schedule.js"></script>
 		<script src="ethsbell.js"></script>
 	</body>
 </html>

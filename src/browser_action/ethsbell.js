@@ -1,79 +1,55 @@
+const scrollElement = document.querySelector('#scroll');
+const schedulenameElement = document.querySelector('#schedulename');
+let currentSchedule = {};
+
 const periodText = document.querySelector('#period');
 const endTimeText = document.querySelector('#end_time');
 const nextText = document.querySelector('#next');
-const tableElement = document.querySelector('#table');
-const tbodyElement = document.querySelector('#tbody');
-const scheduleSelect = document.querySelector('#schedule-select');
-const dateSelect = document.querySelector('#date-select');
-const calendarTable = document.querySelector('#calendar-table');
-const tableTitle = document.querySelector('#tabletitle');
-const scrollElement = document.querySelector('#scroll');
-const scheduleWrap = document.querySelector('#schedulewrap');
-let currentSchedule = {};
 
 // Gets data from /today/now/near
-async function display(data) {
-	if (data[1] && data[1][0]) {
-		if (data[1][0].kind == "AfterSchool") {
-			periodText.textContent = '';
-			endTimeText.textContent = 'School\'s out!';
-			nextText.textContent = '';
-		} else if (data[1][0].kind == "BeforeSchool") {
-			periodText.textContent = '';
-			endTimeText.textContent = 'School hasn\'t started yet!';
-			nextText.textContent = '';
-		} else {
-			const names = data[1].map(period => period.friendly_name);
-			const ends = data[1].map(period => `${human_time(period.end)} (in ${human_time_left(period.end)})`);
-			periodText.textContent = `${human_list(names)} ${data[1].length > 1 ? 'end' : 'ends'} at`;
+function display(data) {
+	if (data[2] && (!data[1] || !data[1][0] || data[1][0].kind !== 'BeforeSchool')) {
+		put_period_to_element(getel('next_period'), data[2]);
+		getel('next_parent').style.display = 'block';
+	} else {
+		getel('next_parent').style.display = 'none';
+	}
 
-			endTimeText.textContent = ends.every(value => value === ends[0]) ? `${ends[0]}` : `${human_list(ends)}${data[1].length > 1 ? ', respectively.' : '.'}`;
-
-			nextText.textContent = data[2] ? `The next period is ${data[2].friendly_name}, which ends at ${human_time(data[2].end)}` : 'This is the last period.';
+	const template = getel('current_period_time_template');
+	const parent = getel('current_parent');
+	parent.innerHTML = '';
+	if (data[1][0]) {
+		for (const i of data[1]) {
+			const new_element = document.createElement('div');
+			new_element.innerHTML = template.innerHTML;
+			put_period_to_element(new_element, i);
+			parent.append(new_element);
 		}
 	} else {
-		periodText.textContent = '';
-		endTimeText.textContent = 'No School';
-		nextText.textContent = '';
+		const new_element = document.createElement('div');
+		new_element.innerHTML = template.innerHTML;
+		put_period_to_element(new_element, null);
+		parent.append(new_element);
 	}
-	all_data = await get('/api/v1/today').then(v => v.periods);
-	place_boxes(all_data);
+
+	update_progress(data);
 }
 
 go();
 
-// Build table from period data
-function buildTable(data) {
-	tbodyElement.innerHTML = '';
 
-	for (const period of data) {
-		const tr = document.createElement('tr');
-		tr.innerHTML = `<td>${period.friendly_name}</td>
-						<td>${human_time(period.start)} - ${human_time(period.end)}</td>
-						<td>${human_time_left(period.end, period.start, true)}</td>`;
-		tbodyElement.append(tr);
-	}
-}
-
-// Get today's schedule
-async function getToday() {
+async function schedule() {
 	const day = await get(`/api/v1/today`);
 	if (!day) {
 		return;
 	}
 
-	currentSchedule = day;
+	place_boxes(day.periods);
 
-	if (day.periods.length == 0) return;
-	buildTable(day.periods);
-
-	scrollElement.style.display = 'flex';
-	scheduleWrap.style.display = 'block';
-
-	tableTitle.innerText = `${day.friendly_name} Schedule`
+	schedulenameElement.innerHTML = `${day.friendly_name}<br>`
 }
 
-getToday();
+schedule();
 
 chrome.runtime.sendMessage({
 	message: "reload"
