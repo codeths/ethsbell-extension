@@ -20,7 +20,7 @@ function place_boxes(data) {
 	calendarElement.innerHTML = '';
 	if (!events) {
 		calendarElement.style.height = 'auto';
-		if (data.length === 0) {
+		if (!data[0]) {
 			updateNowBar();
 			return;
 		}
