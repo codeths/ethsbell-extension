@@ -1,4 +1,4 @@
-const API_BASE = "https://codeths.eths.k12.il.us";
+const API_BASE = "https://ethsbell.app";
 let lastFetchedData = null;
 
 async function get(endpoint = '/api/v1/today/now/near') {
