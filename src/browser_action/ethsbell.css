@@ -144,15 +144,6 @@ body {
 	/* border-radius: 10px; */
 }
 
-#current_parent div,
-#next_period {
-	padding: 10px 0px;
-}
-
-#next_parent {
-	display: none;
-}
-
 .divider {
 	width: 75px;
 	height: 3px;
@@ -268,4 +259,38 @@ body {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+#current_parent div,
+#next_period {
+	padding: 10px 0px;
+}
+
+#next_parent {
+	display: none;
+}
+
+#current_parent div .text-wrapper {
+	vertical-align: middle;
+	display: inline;
+}
+
+#current_parent .progress {
+	display: inline-flex;
+	padding: 0px !important;
+	vertical-align: middle;
+	border: 1px solid white;
+	border-radius: 50%;
+	box-sizing: border-box;
+}
+
+#current_parent .progress-ring {
+	display: inline;
+	padding: 0px !important;
+	vertical-align: middle;
+}
+
+.progress-ring__circle {
+	transform: rotate(-90deg);
+	transform-origin: 50% 50%;
 }
