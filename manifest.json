@@ -22,10 +22,5 @@
 		"default_popup": "src/browser_action/browser_action.html"
 	},
 	"permissions": ["notifications", "storage", "alarms"],
-	"host_permissions": [
-		"https://ethsbell.com/*",
-		"https://ethsbell.xyz/*",
-		"https://codeths.eths.k12.il.us/*",
-		"http://localhost:8000/*"
-	]
+	"host_permissions": ["https://ethsbell.app/*"]
 }
