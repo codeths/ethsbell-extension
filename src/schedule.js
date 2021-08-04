@@ -120,7 +120,7 @@ function place_boxes(data) {
 		element.setAttribute('tabindex', '0');
 
 		element.addEventListener('focus', () => {
-			for (const element_ of [...document.querySelectorAll('#calendar .event.selected')]) {
+			for (const element_ of [...document.querySelectorAll('#calendar-table .event.selected')]) {
 				element_.classList.remove('selected');
 			}
 
