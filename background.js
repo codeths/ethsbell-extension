@@ -126,14 +126,17 @@ async function setPullDataAlarm() {
 
 chrome.runtime.onStartup.addListener(() => {
 	setTimers();
+	setPullDataAlarm();
 });
 chrome.runtime.onInstalled.addListener(() => {
 	setTimers();
+	setPullDataAlarm();
 });
 
 chrome.runtime.onMessage.addListener((message) => {
 	if (message.message == 'reload') {
 		setTimers();
+		setPullDataAlarm();
 	}
 	if (message.message == 'test') {
 		runManual();
@@ -144,3 +147,4 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 setTimers();
+setPullDataAlarm();
