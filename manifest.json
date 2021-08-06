@@ -3,7 +3,7 @@
 	"version": "2.0.0",
 	"manifest_version": 3,
 	"description": "A Chrome Extension version of ETHSBell",
-	"homepage_url": "https://ethsbell.xyz",
+	"homepage_url": "https://ethsbell.app",
 	"icons": {
 		"16": "icons/icon16.png",
 		"48": "icons/icon48.png",
