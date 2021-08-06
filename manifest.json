@@ -1,8 +1,14 @@
 {
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "addon@ethsbell.app",
+			"strict_min_version": "42.0"
+		}
+	},
 	"name": "ETHSBell",
 	"version": "2.0.1",
 	"manifest_version": 2,
-	"description": "A Chrome Extension version of ETHSBell",
+	"description": "A Browser Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.app",
 	"icons": {
 		"16": "icons/icon16.png",
@@ -10,7 +16,10 @@
 		"128": "icons/icon128.png"
 	},
 	"background": {
-		"service_worker": "background.js"
+		"scripts": [
+			"background.js",
+			"src/helpers.js"
+		]
 	},
 	"options_ui": {
 		"open_in_tab": false,

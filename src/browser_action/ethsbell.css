@@ -15,6 +15,12 @@ body {
 	overflow: hidden;
 }
 
+@-moz-document url-prefix() {
+	body {
+		width: 100%;
+	}
+}
+
 #current {
 	color: white;
 	background-color: #007bff;
@@ -261,8 +267,7 @@ body {
 	overflow: hidden;
 }
 
-#current_parent div,
-#next_period {
+#current_parent div, #next_period {
 	padding: 10px 0px;
 }
 
