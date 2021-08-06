@@ -1,6 +1,6 @@
 {
 	"name": "ETHSBell",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"manifest_version": 3,
 	"description": "A Chrome Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.app",
