@@ -10,7 +10,10 @@
 		"128": "icons/icon128.png"
 	},
 	"background": {
-		"service_worker": "background.js"
+		"scripts": [
+			"src/background/background.js",
+			"src/browser_action/helpers.js"
+		]
 	},
 	"options_ui": {
 		"open_in_tab": false,
