@@ -1,0 +1,25 @@
+name: Pack
+on:
+  push:
+    branches:
+      - $default-branch
+    tags:
+      - v*
+  workflow_dispatch:
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: bash build.sh
+      - name: Publish FF
+        uses: actions/upload-artifact@v2
+        with:
+          name: Firefox
+          path: out.xpi
+      - name: Publish Chrome
+        uses: actions/upload-artifact@v2
+        with:
+          name: Chrome
+          path: out.crx

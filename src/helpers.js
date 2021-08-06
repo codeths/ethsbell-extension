@@ -200,19 +200,19 @@ function put_period_to_element(element, period) {
 			const name = element.querySelector('.name');
 
 			if (start) {
-				start.innerHTML = human_time(period.start);
+				start.innerText = human_time(period.start);
 			}
 
 			if (start_in) {
-				start_in.innerHTML = human_time_left(period.start, undefined, true);
+				start_in.innerText = human_time_left(period.start, undefined, true);
 			}
 
 			if (end) {
-				end.innerHTML = human_time(period.end);
+				end.innerText = human_time(period.end);
 			}
 
 			if (end_in) {
-				end_in.innerHTML = human_time_left(period.end, undefined, true);
+				end_in.innerText = human_time_left(period.end, undefined, true);
 			}
 
 			if (name) {
