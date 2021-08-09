@@ -1,4 +1,5 @@
 const scrollElement = document.querySelector('#scroll');
+const calenderWrapper = document.querySelector('#calendar-wrapper');
 const schedulenameElement = document.querySelector('#schedulename');
 let currentSchedule = {};
 
@@ -79,9 +80,13 @@ async function schedule() {
 		return;
 	}
 
-	place_boxes(day.periods);
+	place_boxes(day);
 
-	schedulenameElement.innerHTML = `${day.friendly_name}<br>`
+	if (day.periods.length > 0) {
+		scrollElement.style.display = 'flex';
+		calenderWrapper.style.display = 'block';
+	}
+	schedulenameElement.innerHTML = day.periods.length > 0 ? `${day.friendly_name}<br>` : ''
 }
 
 schedule();

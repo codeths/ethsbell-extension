@@ -36,7 +36,7 @@ body {
 }
 
 #scroll {
-	display: flex;
+	display: none;
 	font-size: 125%;
 	justify-content: center;
 	flex-direction: column;
@@ -185,6 +185,7 @@ body {
 }
 
 #calendar-wrapper {
+	display: none;
 	width: 100%;
 	max-width: 1000px;
 	box-sizing: border-box;
@@ -237,8 +238,8 @@ body {
 }
 
 #calendar-today .event-child {
-	border: 1px solid black;
 	border-radius: 5px;
+	box-shadow: 3px 3px 10px 2px rgba(0, 0, 0, 0.2);
 	background-color: white;
 	padding: 4px;
 	margin: 3px;
@@ -267,7 +268,8 @@ body {
 	overflow: hidden;
 }
 
-#current_parent div, #next_period {
+#current_parent div,
+#next_period {
 	padding: 10px 0px;
 }
 
