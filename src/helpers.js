@@ -223,3 +223,22 @@ function put_period_to_element(element, period) {
 		element.innerHTML = 'No School';
 	}
 }
+
+
+// Convert array of RGB to hex
+function bytes_to_color(bytes) {
+	return '#' + bytes.map(b => ('0' + b.toString(16)).slice(-2)).join('');
+}
+
+// Detect whether text should be black or white based on the background color
+function black_or_white(color, opacity = 1) {
+	if (!color.startsWith('#')) {
+		color = `#${color}`;
+	}
+
+	const r = Number.parseInt(color.slice(1, 3), 16);
+	const g = Number.parseInt(color.slice(3, 5), 16);
+	const b = Number.parseInt(color.slice(5, 7), 16);
+	const luma = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+	return luma > 128 ? `rgba(0, 0, 0, ${opacity})` : `rgba(255, 255, 255, ${opacity})`;
+}

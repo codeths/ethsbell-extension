@@ -12,19 +12,22 @@ let startTime;
 let endDate;
 let endTime;
 let events;
+let backgroundColor = 'rgb(255, 255, 255)';
+let textColor = 'black';
 
 /// Place period boxes for a list of periods.
-function place_boxes(data) {
-	let date = current_date();
+function place_boxes(data_unprocessed, date = current_date(), force = false, today = true) {
+	showNowBar = today;
 
 	calendarElement.innerHTML = '';
-	if (!events) {
+	if (data_unprocessed && (!events || force)) {
 		calendarElement.style.height = 'auto';
-		if (!data[0]) {
+		if (!data_unprocessed.periods[0]) {
 			updateNowBar();
 			return;
 		}
 
+		const data = replace_period(data_unprocessed.periods).filter(v => v);
 		startDate = date_from_api(data[0].start, date);
 		startTime = startDate.getTime() / 1000;
 		endDate = date_from_api(data[data.length - 1].end, date);
@@ -73,6 +76,10 @@ function place_boxes(data) {
 		calendarElement.style.height = `${containerHeight}px`;
 	}
 
+	if (!events) {
+		return;
+	}
+
 	const indicatorDate = new Date(Math.ceil(startDate.getTime() / 1000 / 60 / 60) * 1000 * 60 * 60);
 	while (indicatorDate.getTime() < endDate.getTime()) {
 		const time = indicatorDate.toLocaleTimeString('en-US', { timeZone: 'America/Chicago' });
@@ -89,6 +96,11 @@ function place_boxes(data) {
 	const number_cols = Math.max(...events.map(event => event.col)) + 1;
 	const colwidth = calendarElement.clientWidth / number_cols;
 	const percent = 1 / number_cols * 100;
+
+	if (data_unprocessed) {
+		backgroundColor = data_unprocessed.color ? bytes_to_color(data_unprocessed.color) : '#FFFFFF';
+		textColor = black_or_white(backgroundColor);
+	}
 
 	for (const event of events) {
 		let colspan = 1;
@@ -129,6 +141,8 @@ function place_boxes(data) {
 
 		const childElement = document.createElement('div');
 		childElement.classList.add('event-child');
+		childElement.style.backgroundColor = backgroundColor;
+		childElement.style.color = textColor;
 
 		const nameElement = document.createElement('span');
 		nameElement.classList.add('event-name');
@@ -145,7 +159,7 @@ function place_boxes(data) {
 	}
 }
 
-window.addEventListener('resize', place_boxes);
+window.addEventListener('resize', () => place_boxes());
 
 setInterval(updateNowBar, 1000);
 
