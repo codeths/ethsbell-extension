@@ -16,10 +16,7 @@
 		"128": "icons/icon128.png"
 	},
 	"background": {
-		"scripts": [
-			"background.js",
-			"src/helpers.js"
-		]
+		"scripts": ["src/helpers.js", "background.js"]
 	},
 	"options_ui": {
 		"open_in_tab": false,

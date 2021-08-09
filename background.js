@@ -1,4 +1,3 @@
-importScripts("/src/helpers.js");
 // Set timers for the period end times
 async function setTimers(force = false) {
 
@@ -118,9 +117,10 @@ async function setPullDataAlarm() {
 	let date = new Date();
 	date.setDate(date.getDate() + 1);
 	date.setHours(6, Math.floor(Math.random() * 30) + 1, 0, 0);
-	await chrome.alarms.clear('PullData').catch(e => null);
-	chrome.alarms.create('PullData', {
-		when: date.getTime()
+	chrome.alarms.clear('PullData', () => {
+		chrome.alarms.create('PullData', {
+			when: date.getTime()
+		});
 	});
 }
 
