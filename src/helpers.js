@@ -37,16 +37,18 @@ async function replace_period(period) {
 	}
 
 	const config = await getSchedule();
+	if (!config) return period;
 
-	if (period.kind?.Class || period.kind?.ClassOrLunch) {
-		const class_id = period.kind.Class || period.kind.ClassOrLunch;
-		const class_cfg = config[class_id];
-		if (class_cfg) {
-			period.friendly_name = class_cfg.name;
-			period.url = class_cfg.url;
+	const class_id = period.kind.Class || period.kind.ClassOrLunch;
+	const class_cfg = config[class_id] || config[period.friendly_name];
+	if (class_cfg) {
+		if (class_cfg.name) {
+			period.friendly_name = config.include_period_name || config.include_period_name === undefined ? `${period.friendly_name} - ${class_cfg.name}` : class_cfg.name;
 		}
 
-		return period;
+		if (class_cfg.url) {
+			period.url = class_cfg.url;
+		}
 	}
 
 	return period;
