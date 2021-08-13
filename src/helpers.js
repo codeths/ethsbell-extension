@@ -58,6 +58,10 @@ async function process(data) {
 	return await Promise.all(data.map(replace_period));
 }
 
+function period_html(period) {
+	return period ? (period.url ? `<a href=${period.url}>${period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')}</a>` : period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')) : 'None';
+}
+
 function human_list(items) {
 	let output = '';
 	if (items.length === 1) {
@@ -223,7 +227,7 @@ function put_period_to_element(element, period) {
 			}
 
 			if (name) {
-				name.innerHTML = period.url ? `<a href="${period.url}">${period.friendly_name}</a>` : period.friendly_name;
+				name.innerHTML = period_html(period);
 			}
 		}
 	} else {

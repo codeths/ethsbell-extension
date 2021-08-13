@@ -86,7 +86,7 @@ async function schedule() {
 		scrollElement.style.display = 'flex';
 		calenderWrapper.style.display = 'block';
 	}
-	schedulenameElement.innerHTML = day.periods.length > 0 ? `${day.friendly_name}<br>` : ''
+	schedulenameElement.innerHTML = day.periods.length > 0 ? `${period_html(day.friendly_name)}<br>` : ''
 }
 
 schedule();
