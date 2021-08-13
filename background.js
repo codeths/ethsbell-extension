@@ -146,5 +146,15 @@ chrome.runtime.onMessage.addListener((message) => {
 	}
 });
 
+chrome.runtime.onMessageExternal.addListener((message, sender) => {
+	if (message && message.message == 'schedule' && message.data) {
+		try {
+			let data = JSON.parse(message.data);
+			if (!data) return;
+			chrome.storage.local.set({schedule: data.schedule || {}});
+		} catch (e) {}
+	}
+})
+
 setTimers();
 setPullDataAlarm();

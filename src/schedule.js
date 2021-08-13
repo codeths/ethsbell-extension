@@ -16,7 +16,7 @@ let backgroundColor = 'rgb(255, 255, 255)';
 let textColor = 'black';
 
 /// Place period boxes for a list of periods.
-function place_boxes(data_unprocessed, date = current_date(), force = false, today = true) {
+async function place_boxes(data_unprocessed, date = current_date(), force = false, today = true) {
 	showNowBar = today;
 
 	calendarElement.innerHTML = '';
@@ -27,7 +27,7 @@ function place_boxes(data_unprocessed, date = current_date(), force = false, tod
 			return;
 		}
 
-		const data = replace_period(data_unprocessed.periods).filter(v => v);
+		const data = (await replace_period(data_unprocessed.periods)).filter(v => v);
 		startDate = date_from_api(data[0].start, date);
 		startTime = startDate.getTime() / 1000;
 		endDate = date_from_api(data[data.length - 1].end, date);

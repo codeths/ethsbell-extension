@@ -32,5 +32,8 @@
 		"storage",
 		"alarms",
 		"https://ethsbell.app/*"
-	]
+	],
+	"externally_connectable": {
+  		"matches": ["https://ethsbell.app/*"]
+	}
 }

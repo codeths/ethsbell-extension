@@ -25,24 +25,26 @@ async function go() {
 		return;
 	}
 
-	data = process(data);
+	data = await process(data);
 	lastFetchedData = data;
 	display(data);
 }
 
-function replace_period(period) {
+async function replace_period(period) {
 	if (!period) return period;
 	if (Array.isArray(period)) {
-		return period.map(replace_period);
+		return await Promise.all(period.map(replace_period));
 	}
+
+	const config = await getSchedule();
 
 	if (period.kind?.Class || period.kind?.ClassOrLunch) {
 		const class_id = period.kind.Class || period.kind.ClassOrLunch;
-		/*const class_cfg = config[class_id];
+		const class_cfg = config[class_id];
 		if (class_cfg) {
 			period.friendly_name = class_cfg.name;
 			period.url = class_cfg.url;
-		}*/
+		}
 
 		return period;
 	}
@@ -50,13 +52,8 @@ function replace_period(period) {
 	return period;
 }
 
-function process(data) {
-	// TODO: This will perform class name replacements
-	/*if (config) {
-		return data.map(replace_period);
-	}*/
-
-	return data;
+async function process(data) {
+	return await Promise.all(data.map(replace_period));
 }
 
 function human_list(items) {
@@ -163,6 +160,14 @@ async function saveLastKnownData(lastFetchedData) {
 	return new Promise(async (resolve, reject) => {
 		chrome.storage.local.set({ lastFetchedData }, () => {
 			return resolve();
+		});
+	});
+}
+
+async function getSchedule() {
+	return new Promise(async (resolve, reject) => {
+		chrome.storage.local.get("schedule", (data) => {
+			return resolve(data.schedule || {});
 		});
 	});
 }
