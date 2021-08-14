@@ -192,7 +192,7 @@ function isJSONEqual(...objects) {
 	// Check if objects have the same keys
 	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) return false;
 	// Check if objects have the same values
-	return objects.every(obj => keys.every(key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] == 'object' ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key])));
+	return objects.every(obj => keys.every(key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] == 'object' && obj[key] ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key])));
 }
 
 
