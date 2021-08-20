@@ -171,6 +171,8 @@ body {
 #schedulename {
 	font-size: 200%;
 	font-weight: bold;
+	padding-bottom: 10px;
+	display: none;
 }
 
 #calendar-today {

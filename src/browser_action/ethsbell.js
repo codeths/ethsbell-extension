@@ -85,8 +85,9 @@ async function schedule() {
 	if (day.periods.length > 0) {
 		scrollElement.style.display = 'flex';
 		calenderWrapper.style.display = 'block';
+		schedulenameElement.innerHTML = `${day.friendly_name}`;
+		schedulenameElement.style.display = 'inline-block';
 	}
-	schedulenameElement.innerHTML = day.periods.length > 0 ? `${day.friendly_name}<br>` : ''
 }
 
 schedule();
