@@ -61,7 +61,7 @@ function findApplicablePeriodEnds(periods, timestamp, offset = null) {
 
 // Run notification
 async function runNotification(timestamp = new Date().getTime(), mockTime) {
-	const today = await get(`/api/v1/today${mockTime ? `?timestamp=${Math.floor(mockTime / 1000)}` : ''}`);
+	const today = await get(`/api/v1/today`);
 	if (!today || !today.periods || !today.periods[0]) return;
 
 	const offset = await getNotificationOffset();

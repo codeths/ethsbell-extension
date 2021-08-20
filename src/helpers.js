@@ -2,7 +2,7 @@ const API_BASE = "https://ethsbell.app";
 let lastFetchedData = null;
 
 async function get(endpoint = '/api/v1/today/now/near') {
-	return fetch(`${API_BASE}${endpoint}${typeof window !== "undefined" ? window.location.search : ''}`)
+	return fetch(`${API_BASE}${endpoint}?timestamp=${Math.floor(current_date().getTime() / 1000)}`)
 		.then(x => x.json()
 			.catch(() => null))
 		.catch(() => null);
