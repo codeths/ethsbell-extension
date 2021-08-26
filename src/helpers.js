@@ -1,10 +1,9 @@
-const API_BASE = "https://ethsbell.app";
+const API_BASE = 'https://ethsbell.app';
 let lastFetchedData = null;
 
 async function get(endpoint = '/api/v1/today/now/near') {
 	return fetch(`${API_BASE}${endpoint}?timestamp=${Math.floor(current_date().getTime() / 1000)}`)
-		.then(x => x.json()
-			.catch(() => null))
+		.then(x => x.json().catch(() => null))
 		.catch(() => null);
 }
 
@@ -63,7 +62,11 @@ async function process(data) {
 }
 
 function period_html(period) {
-	return period ? (period.url ? `<a href=${period.url}>${period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')}</a>` : period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')) : 'None';
+	return period
+		? period.url
+			? `<a href=${period.url}>${period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')}</a>`
+			: period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')
+		: 'None';
 }
 
 function human_list(items) {
@@ -93,7 +96,7 @@ function plural_suffix(number, string) {
 // Gets current date
 // If timestamp query string is provided, that is used instead of current.
 function current_date() {
-	if (typeof window !== "undefined") {
+	if (typeof window !== 'undefined') {
 		const timestampQueryString = new URLSearchParams(window.location.search).get('timestamp');
 		if (timestampQueryString) {
 			return new Date(Number.parseInt(timestampQueryString, 10) * 1000);
@@ -111,7 +114,7 @@ function date_from_api(time, now = current_date()) {
 
 function human_time(time) {
 	const date = date_from_api(time);
-	return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
+	return date.toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago'});
 }
 
 // Gets a human readable duration from an epoch timestamp
@@ -120,7 +123,7 @@ function human_time_left(endTime, startTime = null, short = false) {
 	const endDate = date_from_api(endTime).getTime();
 	const timeLeft = Math.floor((endDate - startDate) / 1000);
 	const h = Math.floor(timeLeft / 60 / 60);
-	const m = Math.ceil(timeLeft / 60 % 60);
+	const m = Math.ceil((timeLeft / 60) % 60);
 	if (short) {
 		if (h > 0) {
 			return `${h}h ${m}m`;
@@ -143,7 +146,7 @@ function date_to_string(date = current_date()) {
 
 async function getNotificationOffset() {
 	return new Promise(async (resolve, reject) => {
-		chrome.storage.sync.get(['enabled', 'offset'], (data) => {
+		chrome.storage.sync.get(['enabled', 'offset'], data => {
 			if (!data.enabled) return resolve(null);
 			return resolve(data.offset ?? null);
 		});
@@ -152,7 +155,7 @@ async function getNotificationOffset() {
 
 async function setNotificationOffset(offset) {
 	return new Promise(async (resolve, reject) => {
-		chrome.storage.sync.set({ offset }, () => {
+		chrome.storage.sync.set({offset}, () => {
 			return resolve();
 		});
 	});
@@ -160,7 +163,7 @@ async function setNotificationOffset(offset) {
 
 async function setNotificationEnabled(enabled) {
 	return new Promise(async (resolve, reject) => {
-		chrome.storage.sync.set({ enabled }, () => {
+		chrome.storage.sync.set({enabled}, () => {
 			return resolve();
 		});
 	});
@@ -168,7 +171,7 @@ async function setNotificationEnabled(enabled) {
 
 async function saveLastKnownData(lastFetchedData) {
 	return new Promise(async (resolve, reject) => {
-		chrome.storage.local.set({ lastFetchedData }, () => {
+		chrome.storage.local.set({lastFetchedData}, () => {
 			return resolve();
 		});
 	});
@@ -176,7 +179,7 @@ async function saveLastKnownData(lastFetchedData) {
 
 async function getSchedule() {
 	return new Promise(async (resolve, reject) => {
-		chrome.storage.local.get("schedule", (data) => {
+		chrome.storage.local.get('schedule', data => {
 			return resolve(data.schedule || {});
 		});
 	});
@@ -184,7 +187,7 @@ async function getSchedule() {
 
 async function didDataChange(newData) {
 	return new Promise(async (resolve, reject) => {
-		chrome.storage.local.get(["lastFetchedData"], ({ lastFetchedData }) => {
+		chrome.storage.local.get(['lastFetchedData'], ({lastFetchedData}) => {
 			if (!lastFetchedData) return resolve(true);
 			return resolve(!isJSONEqual(lastFetchedData, newData));
 		});
@@ -196,49 +199,32 @@ function isJSONEqual(...objects) {
 	// Check if objects have the same keys
 	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) return false;
 	// Check if objects have the same values
-	return objects.every(obj => keys.every(key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] == 'object' && obj[key] && objects[0][key] ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key])));
+	return objects.every(obj =>
+		keys.every(
+			key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] == 'object' && obj[key] && objects[0][key] ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key]),
+		),
+	);
 }
-
 
 // Writes a period to an element and its children
 function put_period_to_element(element, period) {
 	if (period) {
 		if (period.kind === 'BeforeSchool') {
-			element.innerHTML = 'School hasn\'t started yet!';
+			element.innerHTML = "School hasn't started yet!";
 		} else if (period.kind === 'AfterSchool') {
-			element.innerHTML = 'School\'s out!';
+			element.innerHTML = "School's out!";
 		} else {
-			const start = element.querySelector('.start');
-			const start_in = element.querySelector('.start_in');
-			const end = element.querySelector('.end');
-			const end_in = element.querySelector('.end_in');
-			const name = element.querySelector('.name');
-
-			if (start) {
-				start.innerText = human_time(period.start);
-			}
-
-			if (start_in) {
-				start_in.innerText = human_time_left(period.start, undefined, true);
-			}
-
-			if (end) {
-				end.innerText = human_time(period.end);
-			}
-
-			if (end_in) {
-				end_in.innerText = human_time_left(period.end, undefined, true);
-			}
-
-			if (name) {
-				name.innerHTML = period_html(period);
-			}
+			element.innerHTML = element.innerHTML
+				.replaceAll('{START}', human_time(period.start))
+				.replaceAll('{END}', human_time(period.end))
+				.replaceAll('{START_IN}', human_time_left(period.start, undefined, true))
+				.replaceAll('{END_IN}', human_time_left(period.end, undefined, true))
+				.replaceAll('{NAME}', period.url ? `<a href="${period.url}">${period.friendly_name}</a>` : period.friendly_name);
 		}
 	} else {
 		element.innerHTML = 'No School';
 	}
 }
-
 
 // Convert array of RGB to hex
 function bytes_to_color(bytes) {
@@ -254,6 +240,6 @@ function black_or_white(color, opacity = 1) {
 	const r = Number.parseInt(color.slice(1, 3), 16);
 	const g = Number.parseInt(color.slice(3, 5), 16);
 	const b = Number.parseInt(color.slice(5, 7), 16);
-	const luma = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+	const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
 	return luma > 128 ? `rgba(0, 0, 0, ${opacity})` : `rgba(255, 255, 255, ${opacity})`;
 }

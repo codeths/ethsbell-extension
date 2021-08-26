@@ -23,8 +23,6 @@ function display(data) {
 
 	progressIntervals = [];
 
-	lastData = data;
-
 	if (data[2] && (!data[1] || !data[1][0] || data[1][0].kind !== 'BeforeSchool')) {
 		put_period_to_element(getel('next_period'), data[2]);
 		getel('next_parent').style.display = 'block';
@@ -36,6 +34,17 @@ function display(data) {
 	const parent = getel('current_parent');
 	parent.innerHTML = '';
 	if (data[1][0]) {
+		if (lastData) {
+			const oldPeriods = lastData
+				.flat()
+				.filter(x => x)
+				.map(x => x.friendly_name);
+			const nowPeriods = new Set(data[1].filter(x => x).map(x => x.friendly_name));
+
+			if (oldPeriods.every(x => !nowPeriods.has(x))) {
+				schedule();
+			}
+		}
 		for (const i of data[1]) {
 			const new_element = document.createElement('div');
 			new_element.innerHTML = template.innerHTML;
@@ -57,9 +66,11 @@ function display(data) {
 			border.setAttribute('cy', size / 2);
 			border.setAttribute('r', size / 2 - 2);
 
-			progressIntervals.push(setInterval(() => {
-				update_progress_circular(i, new_element);
-			}, 1000));
+			progressIntervals.push(
+				setInterval(() => {
+					update_progress_circular(i, new_element);
+				}, 1000),
+			);
 			update_progress_circular(i, new_element);
 		}
 	} else {
@@ -68,6 +79,8 @@ function display(data) {
 		put_period_to_element(new_element, null);
 		parent.append(new_element);
 	}
+
+	lastData = data;
 }
 
 window.addEventListener('resize', () => display(lastData));
@@ -93,10 +106,10 @@ async function schedule() {
 schedule();
 
 chrome.runtime.sendMessage({
-	message: "reload"
+	message: 'reload',
 });
 
-document.getElementById('options').addEventListener('click', (e) => {
+document.getElementById('options').addEventListener('click', e => {
 	e.preventDefault();
-	chrome.runtime.openOptionsPage()
+	chrome.runtime.openOptionsPage();
 });

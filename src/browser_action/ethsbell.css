@@ -8,8 +8,8 @@
 body {
 	display: flex;
 	flex-flow: column;
-	width: 600px;
-	height: 400px;
+	width: 700px;
+	height: 450px;
 	padding: 0px;
 	margin: 0px;
 	overflow: hidden;
@@ -145,7 +145,7 @@ body {
 	background-color: white;
 	display: block;
 	height: 100%;
-	content: "";
+	content: '';
 	width: var(--width);
 	/* border-radius: 10px; */
 }
@@ -300,4 +300,24 @@ body {
 .progress-ring__circle {
 	transform: rotate(-90deg);
 	transform-origin: 50% 50%;
+}
+
+#schedule-link {
+	border: 2px solid #007bff;
+	color: #007bff;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	margin: 10px;
+	cursor: pointer;
+	border-radius: 20px;
+	transition: all 0.5s ease-in-out;
+	font-size: 110%;
+}
+
+#schedule-link:hover {
+	border-color: transparent;
+	background-color: #007bff;
+	color: white;
 }

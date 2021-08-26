@@ -6,56 +6,32 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>ETHSBell</title>
 		<link rel="stylesheet" href="ethsbell.css" />
-		<meta
-			http-equiv="Content-Security-Policy"
-			content="default-src 'self'; connect-src 'self' https://ethsbell.app/;"
-		/>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://ethsbell.app/;" />
 	</head>
 
 	<body>
 		<div id="wrapper">
 			<div id="current">
 				<div id="buttons">
-					<a href="" id="options" title="Options" target="_blank"
-						><img src="/icons/settings.svg"
-					/></a>
-					<a href="https://ethsbell.app" title="Open Website" target="_blank"
-						><img src="/icons/launch.svg"
-					/></a>
+					<a href="" id="options" title="Options" target="_blank"><img src="/icons/settings.svg" /></a>
+					<a href="https://ethsbell.app" title="Open Website" target="_blank"><img src="/icons/launch.svg" /></a>
 				</div>
 				<div class="big block text-center content">
 					<template id="current_period_time_template">
 						<div class="progress">
 							<svg class="progress-ring">
-								<circle
-									class="progress-ring__circle"
-									stroke="white"
-									fill="transparent"
-								/>
-								<circle
-									class="progress-ring__border"
-									stroke="white"
-									fill="transparent"
-									strokewidth="4"
-								/>
+								<circle class="progress-ring__circle" stroke="white" fill="transparent" />
+								<circle class="progress-ring__border" stroke="white" fill="transparent" strokewidth="4" />
 							</svg>
 						</div>
-						<span class="text-wrapper">
-							<span class="name"></span>
-							ends at
-							<b class="end"></b>
-							(in <b class="end_in"></b>).
-						</span>
+						<span class="text-wrapper">{NAME} ends at <b>{END}</b> (in <b>{END_IN}</b>). </span>
 					</template>
 					<div class="content">
 						<span id="schedulename"></span>
 						<div class="big" id="current_parent"></div>
 						<div id="next_parent">
 							<div class="divider"></div>
-							<div class="bigish" id="next_period">
-								The next period is <span class="name"></span>, which ends at
-								<span class="end"></span>.
-							</div>
+							<div class="bigish" id="next_period">The next period is {NAME}, which ends at {END}.</div>
 						</div>
 					</div>
 				</div>
@@ -66,6 +42,7 @@
 					<div id="now"></div>
 					<div id="event-wrapper"></div>
 				</div>
+				<a href="https://ethsbell.app" title="View More Schedules" target="_blank" id="schedule-link">View More Schedules</a>
 			</div>
 		</div>
 		<script src="../helpers.js"></script>
