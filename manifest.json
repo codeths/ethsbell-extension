@@ -6,7 +6,7 @@
 		}
 	},
 	"name": "ETHSBell",
-	"version": "2.2.1",
+	"version": "2.2.2",
 	"manifest_version": 2,
 	"description": "A Browser Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.app",
@@ -27,12 +27,7 @@
 		"default_title": "ETHSBell",
 		"default_popup": "src/browser_action/browser_action.html"
 	},
-	"permissions": [
-		"notifications",
-		"storage",
-		"alarms",
-		"https://ethsbell.app/*"
-	],
+	"permissions": ["notifications", "storage", "alarms", "https://ethsbell.app/*"],
 	"externally_connectable": {
 		"matches": ["https://ethsbell.app/*"]
 	}
