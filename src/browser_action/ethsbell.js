@@ -121,7 +121,7 @@ async function setColors(color) {
 		cfg = await getConfig();
 	}
 
-	if (cfg.use_schedule_color) {
+	if (cfg.use_schedule_color !== false) {
 		if (color) {
 			setStoredColor(color);
 		}
