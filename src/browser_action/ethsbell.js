@@ -143,11 +143,11 @@ setColors();
 async function getStoredColor() {
 	return new Promise((resolve, reject) => {
 		chrome.storage.local.get('color', data => {
-			if (data.color.expires < Date.now()) {
+			if (data.color.expires > Date.now()) {
 				return resolve(data.color.color);
 			}
 
-			return null;
+			return resolve(null);
 		});
 	});
 }
