@@ -34,16 +34,21 @@ async function go(shouldSetTimeout = true) {
 }
 
 async function replace_period(period) {
-	if (!period) return period;
-	if (Array.isArray(period)) {
-		return await Promise.all(period.map(replace_period));
+	if (!period) {
+		return period;
 	}
 
-	const config = await getSchedule();
-	if (!config) return period;
+	if (Array.isArray(period)) {
+		return Promise.all(period.map(x => replace_period(x)));
+	}
+
+	const config = await getConfig();
+	if (!config) {
+		return period;
+	}
 
 	const class_id = period.kind.Class || period.kind.ClassOrLunch;
-	const class_cfg = config[class_id] || config[period.friendly_name];
+	const class_cfg = config.schedule[class_id] || config.schedule[period.friendly_name];
 	if (class_cfg) {
 		if (class_cfg.name) {
 			period.friendly_name = config.include_period_name || config.include_period_name === undefined ? `${period.friendly_name} - ${class_cfg.name}` : class_cfg.name;
@@ -58,14 +63,14 @@ async function replace_period(period) {
 }
 
 async function process(data) {
-	return await Promise.all(data.map(replace_period));
+	return Promise.all(data.map(x => replace_period(x)));
 }
 
 function period_html(period) {
 	return period
-		? period.url
+		? (period.url
 			? `<a href=${period.url}>${period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')}</a>`
-			: period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;')
+			: period.friendly_name.replaceAll('<', '&gt;').replaceAll('>', '&lt;'))
 		: 'None';
 }
 
@@ -145,63 +150,85 @@ function date_to_string(date = current_date()) {
 }
 
 async function getNotificationOffset() {
-	return new Promise(async (resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		chrome.storage.sync.get(['enabled', 'offset'], data => {
-			if (!data.enabled) return resolve(null);
+			if (!data.enabled) {
+				return resolve(null);
+			}
+
 			return resolve(data.offset ?? null);
 		});
 	});
 }
 
 async function setNotificationOffset(offset) {
-	return new Promise(async (resolve, reject) => {
-		chrome.storage.sync.set({offset}, () => {
-			return resolve();
-		});
+	return new Promise((resolve, reject) => {
+		chrome.storage.sync.set({offset}, () => resolve());
 	});
 }
 
 async function setNotificationEnabled(enabled) {
-	return new Promise(async (resolve, reject) => {
-		chrome.storage.sync.set({enabled}, () => {
-			return resolve();
-		});
+	return new Promise((resolve, reject) => {
+		chrome.storage.sync.set({enabled}, () => resolve());
 	});
 }
 
 async function saveLastKnownData(lastFetchedData) {
-	return new Promise(async (resolve, reject) => {
-		chrome.storage.local.set({lastFetchedData}, () => {
-			return resolve();
-		});
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.set({lastFetchedData}, () => resolve());
 	});
 }
 
 async function getSchedule() {
-	return new Promise(async (resolve, reject) => {
-		chrome.storage.local.get('schedule', data => {
-			return resolve(data.schedule || {});
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get('schedule', data => resolve(data.schedule || {}));
+	});
+}
+
+async function getConfig() {
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get('config', async data => {
+			let cfg = data.config;
+			if (!cfg) {
+				cfg = {
+					schedule: await getSchedule() || {},
+				};
+			}
+
+			return resolve(cfg);
 		});
 	});
 }
 
+async function getTheme() {
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get('theme', data => resolve(data.theme || {}));
+	});
+}
+
 async function didDataChange(newData) {
-	return new Promise(async (resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		chrome.storage.local.get(['lastFetchedData'], ({lastFetchedData}) => {
-			if (!lastFetchedData) return resolve(true);
+			if (!lastFetchedData) {
+				return resolve(true);
+			}
+
 			return resolve(!isJSONEqual(lastFetchedData, newData));
 		});
 	});
 }
 
 function isJSONEqual(...objects) {
-	let keys = Object.keys(objects[0]);
+	const keys = Object.keys(objects[0]);
 	// Check if objects have the same keys
-	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) return false;
+	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) {
+		return false;
+	}
+
 	// Check if objects have the same values
 	return objects.every(obj =>
 		keys.every(
-			key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] == 'object' && obj[key] && objects[0][key] ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key]),
+			key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] === 'object' && obj[key] && objects[0][key] ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key]),
 		),
 	);
 }
@@ -210,9 +237,9 @@ function isJSONEqual(...objects) {
 function put_period_to_element(element, period) {
 	if (period) {
 		if (period.kind === 'BeforeSchool') {
-			element.innerHTML = "School hasn't started yet!";
+			element.innerHTML = 'School hasn\'t started yet!';
 		} else if (period.kind === 'AfterSchool') {
-			element.innerHTML = "School's out!";
+			element.innerHTML = 'School\'s out!';
 		} else {
 			element.innerHTML = element.innerHTML
 				.replaceAll('{START}', human_time(period.start))

@@ -1,15 +1,22 @@
 // Set timers for the period end times
 async function setTimers(force = false) {
 	const offset = await getNotificationOffset();
-	if (offset == null) return;
+	if (offset === null) {
+		return;
+	}
 
 	const apidata = await get('/api/v1/today');
-	if (!apidata) return;
+	if (!apidata) {
+		return;
+	}
 
 	if (!force) {
 		const didChange = await didDataChange(apidata);
-		if (!didChange) return;
+		if (!didChange) {
+			return;
+		}
 	}
+
 	await saveLastKnownData(apidata);
 
 	await clearNotificationAlarms();
@@ -18,8 +25,8 @@ async function setTimers(force = false) {
 		.map(period => (period.end_timestamp - offset * 60) * 1000)
 		.filter(
 			(timestamp, pos, array) =>
-				timestamp > new Date().getTime() &&
-				array.indexOf(timestamp) == pos,
+				timestamp > Date.now()
+				&& array.indexOf(timestamp) === pos,
 		);
 
 	endTimes.forEach(timestamp => {
@@ -31,13 +38,14 @@ async function setTimers(force = false) {
 
 // Clear all notification timers
 async function clearNotificationAlarms() {
-	return new Promise(async (resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		chrome.alarms.getAll(async alarms => {
-			for (let alarm of alarms) {
+			for (const alarm of alarms) {
 				if (alarm.name.startsWith('Notify')) {
-					await clearAlarm(alarm.name);
+					clearAlarm(alarm.name);
 				}
 			}
+
 			return resolve();
 		});
 	});
@@ -45,10 +53,8 @@ async function clearNotificationAlarms() {
 
 // Clear alarm by name (promisified)
 async function clearAlarm(name) {
-	return new Promise(async (resolve, reject) => {
-		chrome.alarms.clear(name, () => {
-			return resolve();
-		});
+	return new Promise((resolve, reject) => {
+		chrome.alarms.clear(name, () => resolve());
 	});
 }
 
@@ -66,43 +72,53 @@ function findApplicablePeriodEnds(periods, timestamp, offset = null) {
 	return periods
 		.filter(
 			x =>
-				(x.end_timestamp + 60) * 1000 >= timestamp &&
-				(offset == null ||
-					(x.end_timestamp - 60 * offset) * 1000 <= timestamp),
+				(x.end_timestamp + 60) * 1000 >= timestamp
+				&& (offset === null
+					|| (x.end_timestamp - 60 * offset) * 1000 <= timestamp),
 		)
 		.sort((a, b) => a.end_timestamp - b.end_timestamp);
 }
 
 // Run notification
-async function runNotification(timestamp = new Date().getTime(), mockTime) {
-	const today = await get(`/api/v1/today`);
-	if (!today || !today.periods || !today.periods[0]) return;
+async function runNotification(timestamp = Date.now(), mockTime = null) {
+	const today = await get('/api/v1/today');
+	if (!today || !today.periods || !today.periods[0]) {
+		return;
+	}
 
 	const offset = await getNotificationOffset();
-	if (offset == null) return;
+	if (offset === null) {
+		return;
+	}
 
 	const currentPeriods = findApplicablePeriodEnds(
 		today.periods,
 		timestamp,
 		offset,
 	);
-	if (!currentPeriods || !currentPeriods[0]) return;
+	if (!currentPeriods || !currentPeriods[0]) {
+		return;
+	}
 
 	const nowPeriods = findApplicablePeriodEnds(
 		today.periods,
-		mockTime || new Date().getTime(),
+		mockTime || Date.now(),
 		offset,
 	);
-	if (!isJSONEqual(nowPeriods, currentPeriods)) return;
+	if (!isJSONEqual(nowPeriods, currentPeriods)) {
+		return;
+	}
 
 	const periods = today.periods.filter(
-		p => p.end_timestamp == currentPeriods[0].end_timestamp,
+		p => p.end_timestamp === currentPeriods[0].end_timestamp,
 	);
 
 	const endTime = currentPeriods.end_timestamp * 1000;
 	const now = Date.now();
 	const timeLeftInMinutes = (endTime - now) / 1000 / 60 / 60;
-	if (timeLeftInMinutes < -1) return;
+	if (timeLeftInMinutes < -1) {
+		return;
+	}
 
 	chrome.notifications.create('', {
 		type: 'basic',
@@ -136,13 +152,13 @@ function getNotificationMessage(period, name, now) {
 // When alarm goes off
 
 chrome.alarms.onAlarm.addListener(alarm => {
-	//Refresh data
-	if (alarm.name == 'PullData') {
+	// Refresh data
+	if (alarm.name === 'PullData') {
 		setTimers();
 		setPullDataAlarm();
 	}
 
-	//Period notifier
+	// Period notifier
 	if (alarm.name.startsWith('Notify-')) {
 		runNotification(alarm.scheduledTime);
 	}
@@ -150,7 +166,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
 
 // Set timer for next day
 async function setPullDataAlarm() {
-	let date = new Date();
+	const date = new Date();
 	date.setDate(date.getDate() + 1);
 	date.setHours(6, Math.floor(Math.random() * 30) + 1, 0, 0);
 	chrome.alarms.clear('PullData', () => {
@@ -170,27 +186,33 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.onMessage.addListener(message => {
-	if (message.message == 'reload') {
+	if (message.message === 'reload') {
 		setTimers();
 		setPullDataAlarm();
 	}
-	if (message.message == 'test') {
+
+	if (message.message === 'test') {
 		runManual();
 	}
-	if (message.message == 'reload-force') {
+
+	if (message.message === 'reload-force') {
 		setTimers(true);
 	}
 });
 
 chrome.runtime.onMessageExternal.addListener(async (message, sender) => {
-	if (message && message.message == 'schedule' && message.data) {
+	if (message && message.message === 'schedule' && message.data) {
 		try {
-			let data = JSON.parse(message.data);
-			if (!data) return;
-			let old = await getSchedule();
-			if (!isJSONEqual(old, data))
-				chrome.storage.local.set({schedule: data.schedule || {}});
-		} catch (e) {}
+			const data = JSON.parse(message.data);
+			if (!data) {
+				return;
+			}
+
+			const old = await getConfig();
+			if (!isJSONEqual(old, data)) {
+				chrome.storage.local.set({config: data || {}});
+			}
+		} catch {}
 	}
 });
 

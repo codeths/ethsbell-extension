@@ -25,7 +25,6 @@ function update_progress(data) {
 	}
 }
 
-
 function calculate_progress_percent(period) {
 	const length = (date_from_api(period.end) - date_from_api(period.start)) / 1000;
 	const now = (current_date().getTime() - date_from_api(period.start)) / 1000;

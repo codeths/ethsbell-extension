@@ -1,11 +1,12 @@
-const scrollElement = document.querySelector('#scroll');
-const calenderWrapper = document.querySelector('#calendar-wrapper');
-const schedulenameElement = document.querySelector('#schedulename');
-let currentSchedule = {};
+let scrollElement;
+let schedulenameElement;
+let calenderWrapper;
+let periodText;
+let endTimeText;
+let nextText;
+let loaded = false;
 
-const periodText = document.querySelector('#period');
-const endTimeText = document.querySelector('#end_time');
-const nextText = document.querySelector('#next');
+const currentSchedule = {};
 
 let lastData;
 // Gets data from /today/now/near
@@ -45,6 +46,7 @@ function display(data) {
 				schedule();
 			}
 		}
+
 		for (const i of data[1]) {
 			const new_element = document.createElement('div');
 			new_element.innerHTML = template.innerHTML;
@@ -54,6 +56,10 @@ function display(data) {
 
 			const size = Number.parseFloat(document.defaultView.getComputedStyle(new_element, null).fontSize.slice(0, -2));
 			const svg = new_element.querySelector('.progress-ring');
+			if (!svg) {
+				return;
+			}
+
 			svg.setAttribute('width', size);
 			svg.setAttribute('height', size);
 			const circle = new_element.querySelector('.progress-ring__circle');
@@ -85,17 +91,16 @@ function display(data) {
 
 window.addEventListener('resize', () => display(lastData));
 
-go(display);
-
 async function schedule() {
-	const day = await get(`/api/v1/today`);
+	const day = await get('/api/v1/today');
 	if (!day) {
 		return;
 	}
 
+	setColors(bytes_to_color(day.color));
 	place_boxes(day);
 
-	if (day.periods.length > 0) {
+	if (loaded && day.periods.length > 0) {
 		scrollElement.style.display = 'flex';
 		calenderWrapper.style.display = 'block';
 		schedulenameElement.innerHTML = `${day.friendly_name}`;
@@ -109,7 +114,67 @@ chrome.runtime.sendMessage({
 	message: 'reload',
 });
 
-document.getElementById('options').addEventListener('click', e => {
-	e.preventDefault();
-	chrome.runtime.openOptionsPage();
+let cfg = null;
+
+async function setColors(color) {
+	if (!cfg) {
+		cfg = await getConfig();
+	}
+
+	if (cfg.use_schedule_color) {
+		if (color) {
+			setStoredColor(color);
+		}
+
+		color ??= await getStoredColor();
+		if (color) {
+			document.body.style.setProperty('--background-color', color);
+			document.body.style.setProperty('--text-color', black_or_white(color));
+			return;
+		}
+	}
+
+	document.body.style.setProperty('--background-color', cfg.background_color);
+	document.body.style.setProperty('--text-color', cfg.background_text_color);
+}
+
+setColors();
+
+async function getStoredColor() {
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get('color', data => {
+			if (data.color.expires < Date.now()) {
+				return resolve(data.color.color);
+			}
+
+			return null;
+		});
+	});
+}
+
+async function setStoredColor(color) {
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.set({color: {
+			color,
+			expires: new Date().setHours(24, 0, 0, 0),
+		}}, () => resolve());
+	});
+}
+
+window.addEventListener('load', () => {
+	scrollElement = document.querySelector('#scroll');
+	schedulenameElement = document.querySelector('#schedulename');
+	calenderWrapper = document.querySelector('#calendar-wrapper');
+	periodText = document.querySelector('#period');
+	endTimeText = document.querySelector('#end_time');
+	nextText = document.querySelector('#next');
+	loaded = true;
+
+	go(display);
+	schedule();
+
+	document.querySelector('#options').addEventListener('click', e => {
+		e.preventDefault();
+		chrome.runtime.openOptionsPage();
+	});
 });

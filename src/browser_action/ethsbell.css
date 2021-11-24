@@ -13,6 +13,8 @@ body {
 	padding: 0px;
 	margin: 0px;
 	overflow: hidden;
+	--background-color: #c34614;
+	--text-color: #ffffff;
 }
 
 @-moz-document url-prefix() {
@@ -22,8 +24,8 @@ body {
 }
 
 #current {
-	color: white;
-	background-color: #007bff;
+	background-color: var(--background-color);
+	color: var(--text-color);
 	width: 100%;
 	height: 90%;
 	position: relative;
@@ -73,8 +75,11 @@ body {
 	font-size: 150%;
 }
 
-#buttons a {
+#buttons a,
+#buttons a:hover #buttons a:active {
 	padding: 5px;
+	color: var(--text-color);
+	text-decoration: none;
 }
 
 #wrapper {
@@ -138,11 +143,11 @@ body {
 .progress_bar:not(:last-child) {
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
-	border-bottom-color: white;
+	border-bottom-color: var(--text-color);
 }
 
 .progress_bar::before {
-	background-color: white;
+	background-color: var(--text-color);
 	display: block;
 	height: 100%;
 	content: '';

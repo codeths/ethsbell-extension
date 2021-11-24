@@ -82,7 +82,7 @@ async function place_boxes(data_unprocessed, date = current_date(), force = fals
 
 	const indicatorDate = new Date(Math.ceil(startDate.getTime() / 1000 / 60 / 60) * 1000 * 60 * 60);
 	while (indicatorDate.getTime() < endDate.getTime()) {
-		const time = indicatorDate.toLocaleTimeString('en-US', { timeZone: 'America/Chicago' });
+		const time = indicatorDate.toLocaleTimeString('en-US', {timeZone: 'America/Chicago'});
 		const formatted = `${time.split(':')[0]} ${time.split(' ')[1]}`;
 		const top = ((indicatorDate.getTime() / 1000) - startTime) / 60 * pixels_per_minute;
 		const span = document.createElement('span');
@@ -132,7 +132,7 @@ async function place_boxes(data_unprocessed, date = current_date(), force = fals
 		element.setAttribute('tabindex', '0');
 
 		element.addEventListener('focus', () => {
-			for (const element_ of [...document.querySelectorAll('#calendar-table .event.selected')]) {
+			for (const element_ of document.querySelectorAll('#calendar-table .event.selected')) {
 				element_.classList.remove('selected');
 			}
 
