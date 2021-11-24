@@ -1,3 +1,4 @@
 .DS_Store
 out.xpi
 out.crx
+node_modules
