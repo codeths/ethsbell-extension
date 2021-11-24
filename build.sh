@@ -1,3 +1,2 @@
 #!/bin/bash
-rm out.zip
-zip out.zip $(find . ! \( -path "./node_modules/*" -o -path "./.git/*" -o -name "*.zip" \))
+zip out.zip $(find . ! \( -path "./node_modules*" -o -path "./.*" -o -name "*.zip" -o -name "*.sh" -o -name "package.json" -o -name "package-lock.json" \))
