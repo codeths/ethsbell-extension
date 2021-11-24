@@ -1,5 +1,8 @@
 {
 	"name": "ethsbell-extension",
+	"scripts": {
+		"build": "./build.sh"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/chromezoneeths/ethsbell-extension.git"
