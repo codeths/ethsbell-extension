@@ -6,7 +6,7 @@
 		}
 	},
 	"name": "ETHSBell",
-	"version": "2.2.5",
+	"version": "2.2.6",
 	"manifest_version": 2,
 	"description": "A Browser Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.app",
