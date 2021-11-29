@@ -48,7 +48,7 @@ async function replace_period(period) {
 	}
 
 	const class_id = period.kind.Class || period.kind.ClassOrLunch;
-	const class_cfg = config.schedule[class_id] || config.schedule[period.friendly_name];
+	const class_cfg = config.schedule && (config.schedule[class_id] || config.schedule[period.friendly_name]);
 	if (class_cfg) {
 		if (class_cfg.name) {
 			period.friendly_name = config.include_period_name || config.include_period_name === undefined ? `${period.friendly_name} - ${class_cfg.name}` : class_cfg.name;
