@@ -27,7 +27,7 @@ async function place_boxes(data_unprocessed, date = current_date(), force = fals
 			return;
 		}
 
-		const data = (await replace_period(data_unprocessed.periods)).filter(v => v);
+		const data = (await replace_period(data_unprocessed.periods.filter(p => p.kind !== 'Passing'))).filter(v => v);
 		startDate = date_from_api(data[0].start, date);
 		startTime = startDate.getTime() / 1000;
 		endDate = date_from_api(data[data.length - 1].end, date);
