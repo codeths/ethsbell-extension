@@ -6,7 +6,7 @@
 		}
 	},
 	"name": "ETHSBell",
-	"version": "2.2.6",
+	"version": "2.2.7",
 	"manifest_version": 2,
 	"description": "A Browser Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.app",
@@ -16,7 +16,10 @@
 		"128": "icons/icon128.png"
 	},
 	"background": {
-		"scripts": ["src/helpers.js", "background.js"]
+		"scripts": [
+			"src/helpers.js",
+			"background.js"
+		]
 	},
 	"options_ui": {
 		"open_in_tab": false,
@@ -34,6 +37,8 @@
 		"https://ethsbell.app/*"
 	],
 	"externally_connectable": {
-		"matches": ["https://ethsbell.app/*"]
+		"matches": [
+			"https://ethsbell.app/*"
+		]
 	}
 }
