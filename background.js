@@ -1,3 +1,5 @@
+let instance = getInstanceDomain();
+
 // Set timers for the period end times
 async function setTimers(force = false) {
 	const offset = await getNotificationOffset();
@@ -5,7 +7,7 @@ async function setTimers(force = false) {
 		return;
 	}
 
-	const apidata = await get('https://ethsbell.app', '/api/v1/today');
+	const apidata = await get(await instance, '/api/v1/today');
 	if (!apidata) {
 		return;
 	}
@@ -81,7 +83,7 @@ function findApplicablePeriodEnds(periods, timestamp, offset = null) {
 
 // Run notification
 async function runNotification(timestamp = Date.now(), mockTime = null) {
-	const today = await get('https://ethsbell.app' ,'/api/v1/today');
+	const today = await get(await instance, '/api/v1/today');
 	if (!today || !today.periods || !today.periods[0]) {
 		return;
 	}
@@ -196,6 +198,7 @@ chrome.runtime.onMessage.addListener(message => {
 	}
 
 	if (message.message === 'reload-force') {
+		instance = getInstanceDomain();
 		setTimers(true);
 	}
 });
