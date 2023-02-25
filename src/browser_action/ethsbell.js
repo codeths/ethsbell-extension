@@ -171,7 +171,11 @@ window.addEventListener('load', async () => {
 	nextText = document.querySelector('#next');
 	loaded = true;
 
-	go(await instance, true);
+	const instanceResolved = await instance;
+	document.querySelector('#homepage-link').href = instanceResolved;
+	document.querySelector('#schedule-link').href = `${instanceResolved}/schedule`;
+
+	go(instanceResolved, true);
 	schedule();
 
 	document.querySelector('#options').addEventListener('click', e => {
