@@ -11,11 +11,11 @@ const banner = document.querySelector('#banner');
 	const instance = await getInstance();
 	switch (instance) {
 		case 'dayschool':
-			document.getElementById('instance:dayschool').checked = true;
+			document.getElementById('instance:dayschool').checked = true; // eslint-disable-line unicorn/prefer-query-selector
 			break;
 		case 'main':
 		default:
-			document.getElementById('instance:main').checked = true;
+			document.getElementById('instance:main').checked = true; // eslint-disable-line unicorn/prefer-query-selector
 			break;
 	}
 })();
@@ -52,12 +52,15 @@ async function setNotificationSettings(settings) {
 
 async function getInstance() {
 	return new Promise(resolve => {
-		chrome.storage.sync.get(['instance'], ({ instance }) => resolve(instance || 'main'));
+		chrome.storage.sync.get(['instance'], ({instance}) => resolve(instance || 'main'));
 	});
 }
+
 async function setInstance() {
 	const instance = document.querySelector('input[name="instance"]:checked').value;
-	return new Promise(resolve => chrome.storage.sync.set({ instance }, resolve));
+	return new Promise(resolve => {
+		chrome.storage.sync.set({instance}, resolve);
+	});
 }
 
 function showBanner(text, color, textColor = '#ffffff', time = 7 * 1000) {

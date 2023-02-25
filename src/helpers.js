@@ -162,9 +162,10 @@ async function getNotificationOffset() {
 
 async function getInstance() {
 	return new Promise(resolve => {
-		chrome.storage.sync.get(['instance'], ({ instance }) => resolve(instance || 'main'));
+		chrome.storage.sync.get(['instance'], ({instance}) => resolve(instance || 'main'));
 	});
 }
+
 async function getInstanceDomain() {
 	const instance = await getInstance();
 	switch (instance) {
