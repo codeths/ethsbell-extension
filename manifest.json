@@ -33,8 +33,7 @@
 	"permissions": [
 		"notifications",
 		"storage",
-		"alarms",
-		"https://ethsbell.app/*"
+		"alarms"
 	],
 	"externally_connectable": {
 		"matches": [
