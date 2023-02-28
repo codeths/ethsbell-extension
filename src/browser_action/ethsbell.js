@@ -5,6 +5,7 @@ let periodText;
 let endTimeText;
 let nextText;
 let loaded = false;
+const instance = getInstanceDomain();
 
 const currentSchedule = {};
 
@@ -92,7 +93,7 @@ function display(data) {
 window.addEventListener('resize', () => display(lastData));
 
 async function schedule() {
-	const day = await get('/api/v1/today');
+	const day = await get(await instance, '/api/v1/today');
 	if (!day) {
 		return;
 	}
@@ -161,7 +162,7 @@ async function setStoredColor(color) {
 	});
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
 	scrollElement = document.querySelector('#scroll');
 	schedulenameElement = document.querySelector('#schedulename');
 	calenderWrapper = document.querySelector('#calendar-wrapper');
@@ -170,7 +171,11 @@ window.addEventListener('load', () => {
 	nextText = document.querySelector('#next');
 	loaded = true;
 
-	go(display);
+	const instanceResolved = await instance;
+	document.querySelector('#homepage-link').href = instanceResolved;
+	document.querySelector('#schedule-link').href = `${instanceResolved}/schedule`;
+
+	go(instanceResolved, true);
 	schedule();
 
 	document.querySelector('#options').addEventListener('click', e => {

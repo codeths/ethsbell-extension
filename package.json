@@ -44,7 +44,9 @@
 			"getConfig",
 			"isJSONEqual",
 			"human_list",
-			"plural_suffix"
+			"plural_suffix",
+			"getInstance",
+			"getInstanceDomain"
 		],
 		"rules": {
 			"camelcase": 0,

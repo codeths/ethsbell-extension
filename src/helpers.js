@@ -1,7 +1,6 @@
-const API_BASE = 'https://ethsbell.app';
 let lastFetchedData = null;
 
-async function get(endpoint = '/api/v1/today/now/near') {
+async function get(API_BASE, endpoint = '/api/v1/today/now/near') {
 	return fetch(`${API_BASE}${endpoint}?timestamp=${Math.floor(current_date().getTime() / 1000)}`)
 		.then(x => x.json().catch(() => null))
 		.catch(() => null);
@@ -11,7 +10,7 @@ function getel(id) {
 	return document.querySelector(`#${id}`);
 }
 
-async function go(shouldSetTimeout = true) {
+async function go(DOMAIN, shouldSetTimeout) {
 	if (lastFetchedData) {
 		display(lastFetchedData);
 	}
@@ -19,11 +18,11 @@ async function go(shouldSetTimeout = true) {
 	const now = Date.now();
 	const endOfMinute = Math.ceil(now / 60000) * 60000;
 	if (shouldSetTimeout) {
-		setTimeout(() => go(true), endOfMinute - now);
-		setTimeout(() => go(false), 1000);
+		setTimeout(() => go(DOMAIN, true), endOfMinute - now);
+		setTimeout(() => go(DOMAIN, false), 1000);
 	}
 
-	let data = await get();
+	let data = await get(DOMAIN);
 	if (!data) {
 		return;
 	}
@@ -159,6 +158,23 @@ async function getNotificationOffset() {
 			return resolve(data.offset ?? null);
 		});
 	});
+}
+
+async function getInstance() {
+	return new Promise(resolve => {
+		chrome.storage.sync.get(['instance'], ({instance}) => resolve(instance || 'main'));
+	});
+}
+
+async function getInstanceDomain() {
+	const instance = await getInstance();
+	switch (instance) {
+		case 'dayschool':
+			return 'https://dayschool.ethsbell.app';
+		case 'main':
+		default:
+			return 'https://ethsbell.app';
+	}
 }
 
 async function setNotificationOffset(offset) {

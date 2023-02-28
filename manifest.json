@@ -6,7 +6,7 @@
 		}
 	},
 	"name": "ETHSBell",
-	"version": "2.2.7",
+	"version": "2.3.0",
 	"manifest_version": 2,
 	"description": "A Browser Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.app",
@@ -33,12 +33,12 @@
 	"permissions": [
 		"notifications",
 		"storage",
-		"alarms",
-		"https://ethsbell.app/*"
+		"alarms"
 	],
 	"externally_connectable": {
 		"matches": [
-			"https://ethsbell.app/*"
+			"https://ethsbell.app/*",
+			"https://dayschool.ethsbell.app/*"
 		]
 	}
 }
