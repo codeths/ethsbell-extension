@@ -4,7 +4,7 @@ let calenderWrapper;
 let periodText;
 let endTimeText;
 let nextText;
-let locations;
+let locationsText;
 let loaded = false;
 const instance = getInstanceDomain();
 
@@ -182,10 +182,10 @@ async function updateLocations() {
 		const {closed} = await req.json();
 
 		if (closed.length > 0) {
-			locations.textContent = getLocationString(closed);
-			locations.style.display = 'block';
+			locationsText.textContent = getLocationString(closed);
+			locationsText.style.display = 'block';
 		} else {
-			locations.style.display = 'none';
+			locationsText.style.display = 'none';
 		}
 	} catch (error) {
 		console.error(error);
@@ -199,7 +199,7 @@ window.addEventListener('load', async () => {
 	periodText = document.querySelector('#period');
 	endTimeText = document.querySelector('#end_time');
 	nextText = document.querySelector('#next');
-	locations = document.querySelector('#locations');
+	locationsText = document.querySelector('#locations');
 	loaded = true;
 
 	updateLocations();
