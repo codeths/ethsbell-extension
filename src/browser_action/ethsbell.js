@@ -174,7 +174,7 @@ function getLocationString(closed) {
 
 async function updateLocations() {
 	try {
-		const req = await fetch('https://script.google.com/macros/s/AKfycbzOk8f1HfCMqbRqzU69rT00OvK0y6bbLd6EHcvZRgaZe3HO19VwfZWK7W8DWbaqKivH/exec');
+		const req = await fetch('https://s3.codeths.dev/bell/locations/main');
 		if (!req.ok) {
 			throw new Error(`Failed to fetch closed locations: code ${req.status}`);
 		}
@@ -203,7 +203,7 @@ window.addEventListener('load', async () => {
 	loaded = true;
 
 	updateLocations();
-
+	setInterval(updateLocations, 30000);
 	const instanceResolved = await instance;
 	document.querySelector('#homepage-link').href = instanceResolved;
 	document.querySelector('#schedule-link').href = `${instanceResolved}/schedule`;
