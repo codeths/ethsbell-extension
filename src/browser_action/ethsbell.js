@@ -174,7 +174,7 @@ function getLocationString(closed) {
 
 async function updateLocations() {
 	try {
-		const req = await fetch('https://s3.codeths.dev/bell/locations/main');
+		const req = await fetch('https://s3.codeths.dev/bell/locations/main', {cache: 'no-cache'});
 		if (!req.ok) {
 			throw new Error(`Failed to fetch closed locations: code ${req.status}`);
 		}
