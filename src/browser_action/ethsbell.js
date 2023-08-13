@@ -6,7 +6,8 @@ let endTimeText;
 let nextText;
 let locationsText;
 let loaded = false;
-const instance = getInstanceDomain();
+const instanceDomain = getInstanceDomain();
+let instance;
 
 const currentSchedule = {};
 
@@ -94,7 +95,7 @@ function display(data) {
 window.addEventListener('resize', () => display(lastData));
 
 async function schedule() {
-	const day = await get(await instance, '/api/v1/today');
+	const day = await get(await instanceDomain, '/api/v1/today');
 	if (!day) {
 		return;
 	}
@@ -174,7 +175,7 @@ function getLocationString(closed) {
 
 async function updateLocations() {
 	try {
-		const req = await fetch('https://s3.codeths.dev/bell/locations/main', {cache: 'no-cache'});
+		const req = await fetch(`https://s3.codeths.dev/bell/locations/${instance}`, {cache: 'no-cache'});
 		if (!req.ok) {
 			throw new Error(`Failed to fetch closed locations: code ${req.status}`);
 		}
@@ -202,13 +203,14 @@ window.addEventListener('load', async () => {
 	locationsText = document.querySelector('#locations');
 	loaded = true;
 
+	instance = await getInstance();
 	updateLocations();
 	setInterval(updateLocations, 30000);
-	const instanceResolved = await instance;
-	document.querySelector('#homepage-link').href = instanceResolved;
-	document.querySelector('#schedule-link').href = `${instanceResolved}/schedule`;
+	const instanceDomainResolved = await instanceDomain;
+	document.querySelector('#homepage-link').href = instanceDomainResolved;
+	document.querySelector('#schedule-link').href = `${instanceDomainResolved}/schedule`;
 
-	go(instanceResolved, true);
+	go(instanceDomainResolved, true);
 	schedule();
 
 	document.querySelector('#options').addEventListener('click', e => {
