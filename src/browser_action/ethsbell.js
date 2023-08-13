@@ -4,8 +4,10 @@ let calenderWrapper;
 let periodText;
 let endTimeText;
 let nextText;
+let locationsText;
 let loaded = false;
-const instance = getInstanceDomain();
+const instanceDomain = getInstanceDomain();
+let instance;
 
 const currentSchedule = {};
 
@@ -93,7 +95,7 @@ function display(data) {
 window.addEventListener('resize', () => display(lastData));
 
 async function schedule() {
-	const day = await get(await instance, '/api/v1/today');
+	const day = await get(await instanceDomain, '/api/v1/today');
 	if (!day) {
 		return;
 	}
@@ -162,6 +164,35 @@ async function setStoredColor(color) {
 	});
 }
 
+function getLocationString(closed) {
+	if (closed.length === 1) {
+		return closed[0] + ' is closed today.';
+	}
+
+	const lastLocation = closed.pop();
+	return `${closed.join(', ')}${closed.length > 1 ? ',' : ''} and ${lastLocation} are closed today.`;
+}
+
+async function updateLocations() {
+	try {
+		const req = await fetch(`https://s3.codeths.dev/bell/locations/${instance}`, {cache: 'no-cache'});
+		if (!req.ok) {
+			throw new Error(`Failed to fetch closed locations: code ${req.status}`);
+		}
+
+		const {closed} = await req.json();
+
+		if (closed.length > 0) {
+			locationsText.textContent = getLocationString(closed);
+			locationsText.style.display = 'block';
+		} else {
+			locationsText.style.display = 'none';
+		}
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 window.addEventListener('load', async () => {
 	scrollElement = document.querySelector('#scroll');
 	schedulenameElement = document.querySelector('#schedulename');
@@ -169,13 +200,17 @@ window.addEventListener('load', async () => {
 	periodText = document.querySelector('#period');
 	endTimeText = document.querySelector('#end_time');
 	nextText = document.querySelector('#next');
+	locationsText = document.querySelector('#locations');
 	loaded = true;
 
-	const instanceResolved = await instance;
-	document.querySelector('#homepage-link').href = instanceResolved;
-	document.querySelector('#schedule-link').href = `${instanceResolved}/schedule`;
+	instance = await getInstance();
+	updateLocations();
+	setInterval(updateLocations, 30000);
+	const instanceDomainResolved = await instanceDomain;
+	document.querySelector('#homepage-link').href = instanceDomainResolved;
+	document.querySelector('#schedule-link').href = `${instanceDomainResolved}/schedule`;
 
-	go(instanceResolved, true);
+	go(instanceDomainResolved, true);
 	schedule();
 
 	document.querySelector('#options').addEventListener('click', e => {

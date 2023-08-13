@@ -8,7 +8,7 @@
 	<title>ETHSBell</title>
 	<link rel="stylesheet" href="ethsbell.css" />
 	<meta http-equiv="Content-Security-Policy"
-		content="default-src 'self'; connect-src 'self' https://ethsbell.app/ https://dayschool.ethsbell.app/;" />
+		content="default-src 'self'; connect-src 'self' https://ethsbell.app/ https://dayschool.ethsbell.app/ https://s3.codeths.dev/bell/locations/;" />
 	<script src="../helpers.js"></script>
 </head>
 
@@ -53,6 +53,7 @@
 						<div class="divider"></div>
 						<div class="bigish" id="next_period">The next period is {NAME}, which ends at {END}.</div>
 					</div>
+					<div class="bigish" id="locations"></div>
 				</div>
 			</div>
 		</div>
