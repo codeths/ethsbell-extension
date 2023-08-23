@@ -166,11 +166,11 @@ async function setStoredColor(color) {
 
 function getLocationString(closed) {
 	if (closed.length === 1) {
-		return closed[0] + ' is closed today.';
+		return closed[0] + ' is currently closed.';
 	}
 
 	const lastLocation = closed.pop();
-	return `${closed.join(', ')}${closed.length > 1 ? ',' : ''} and ${lastLocation} are closed today.`;
+	return `${closed.join(', ')}${closed.length > 1 ? ',' : ''} and ${lastLocation} are currently closed.`;
 }
 
 async function updateLocations() {
