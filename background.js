@@ -1,4 +1,69 @@
+import * as util from './src/helpers.js'
 let instance = getInstanceDomain();
+
+// define util functions
+
+async function didDataChange(newData) {
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get(['lastFetchedData'], ({lastFetchedData}) => {
+			if (!lastFetchedData) {
+				return resolve(true);
+			}
+
+			return resolve(!isJSONEqual(lastFetchedData, newData));
+		});
+	});
+}
+
+function isJSONEqual(...objects) {
+	const keys = Object.keys(objects[0]);
+	// Check if objects have the same keys
+	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) {
+		return false;
+	}
+
+	// Check if objects have the same values
+	return objects.every(obj =>
+		keys.every(
+			key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] === 'object' && obj[key] && objects[0][key] ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key]),
+		),
+	);
+}
+
+async function get(API_BASE, endpoint = '/api/v1/today/now/near') {
+	return fetch(`${API_BASE}${endpoint}?timestamp=${Math.floor(current_date().getTime() / 1000)}`)
+		.then(x => x.json().catch(() => null))
+		.catch(() => null);
+}
+
+async function getNotificationOffset() {
+	return new Promise((resolve, reject) => {
+		chrome.storage.sync.get(['enabled', 'offset'], data => {
+			if (!data.enabled) {
+				return resolve(null);
+			}
+
+			return resolve(data.offset ?? null);
+		});
+	});
+}
+
+async function getInstanceDomain() {
+	const instance = await getInstance();
+	switch (instance) {
+		case 'dayschool':
+			return 'https://dayschool.ethsbell.app';
+		case 'main':
+		default:
+			return 'https://ethsbell.app';
+	}
+}
+
+async function getInstance() {
+	return new Promise(resolve => {
+		chrome.storage.sync.get(['instance'], ({instance}) => resolve(instance || 'main'));
+	});
+}
 
 // Set timers for the period end times
 async function setTimers(force = false) {
