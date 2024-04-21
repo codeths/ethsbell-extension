@@ -222,33 +222,6 @@ async function getTheme() {
 	});
 }
 
-async function didDataChange(newData) {
-	return new Promise((resolve, reject) => {
-		chrome.storage.local.get(['lastFetchedData'], ({lastFetchedData}) => {
-			if (!lastFetchedData) {
-				return resolve(true);
-			}
-
-			return resolve(!isJSONEqual(lastFetchedData, newData));
-		});
-	});
-}
-
-function isJSONEqual(...objects) {
-	const keys = Object.keys(objects[0]);
-	// Check if objects have the same keys
-	if (objects.some(obj => keys.some(key => !Object.keys(obj).includes(key)) || Object.keys(obj).some(key => !keys.includes(key)))) {
-		return false;
-	}
-
-	// Check if objects have the same values
-	return objects.every(obj =>
-		keys.every(
-			key => typeof obj[key] === typeof objects[0][key] && (typeof obj[key] === 'object' && obj[key] && objects[0][key] ? isJSONEqual(obj[key], objects[0][key]) : obj[key] === objects[0][key]),
-		),
-	);
-}
-
 // Writes a period to an element and its children
 function put_period_to_element(element, period) {
 	if (period) {
