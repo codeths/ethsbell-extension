@@ -188,7 +188,6 @@ async function updateLocations() {
 		} else if(!message) {
 			locationsText.style.display = 'none';
 		}
-		console.log(message)
 		if(message){
 			locationsText.textContent += " " + message;
 			locationsText.style.display = 'block';
