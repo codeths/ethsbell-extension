@@ -180,13 +180,17 @@ async function updateLocations() {
 			throw new Error(`Failed to fetch closed locations: code ${req.status}`);
 		}
 
-		const {closed} = await req.json();
-
+		const {closed, message} = await req.json();
+		locationsText.textContent = "";
 		if (closed.length > 0) {
 			locationsText.textContent = getLocationString(closed);
 			locationsText.style.display = 'block';
-		} else {
+		} else if(!message) {
 			locationsText.style.display = 'none';
+		}
+		if(message){
+			locationsText.textContent += " " + message;
+			locationsText.style.display = 'block';
 		}
 	} catch (error) {
 		console.error(error);
