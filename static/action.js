@@ -34,9 +34,9 @@ async function fetchData() {
 	};
 }
 
-async function drawFrame(data) {
+function drawFrame(data) {
 	setLinks();
-	textColor = await black_or_white(await rgb(data.day.color));
+	textColor = black_or_white(rgb(data.day.color));
 	document.getElementById('divider').style.backgroundColor = textColor;
 	placeBoxes(data.day, data.schedule);
 }
@@ -55,12 +55,12 @@ async function updateFrame(draw) {
 		chrome.storage.local.set({ schedule: { data: data, updated: updateTime } });
 	}
 	if (draw) {
-		await drawFrame(data);
+		drawFrame(data);
 	}
 	document.getElementById('friendly_name').innerHTML = data.day.friendly_name;
 	currentPeriod(data.now[1], data.schedule);
 	nextPeriod(data.now[2], data.schedule);
-	wrapper.style.backgroundColor = await rgb(data.day.color);
+	wrapper.style.backgroundColor = rgb(data.day.color);
 	let height = 200 + data.now[1].length * 75;
 	if (data.locations.message != '') {
 		height += 75;
@@ -72,12 +72,12 @@ async function updateFrame(draw) {
 	updateLocs(data.locations);
 }
 
-async function rgb(color) {
+function rgb(color) {
 	const color_list = `${color[0]}, ${color[1]}, ${color[2]}`;
 	return `rgb(${color_list})`;
 }
 
-async function currentPeriod(periods, schedule) {
+function currentPeriod(periods, schedule) {
 	let div = document.getElementById('current_period');
 	div.innerHTML = '';
 	if (periods[0] && periods[0]['friendly_name'] === 'After School') {
@@ -129,7 +129,7 @@ async function currentPeriod(periods, schedule) {
 	}
 }
 
-async function nextPeriod(period, schedule) {
+function nextPeriod(period, schedule) {
 	let div = document.getElementById('next_period');
 	div.innerHTML = '';
 
@@ -149,7 +149,7 @@ async function nextPeriod(period, schedule) {
 	}
 }
 
-async function currentPeriodProgress(period, id) {
+function currentPeriodProgress(period, id) {
 	let timeRemaining = (period['end_timestamp'] - Date.now() / 1000) * 1000;
 	let percentElapsed =
 		(Date.now() / 1000 - period['start_timestamp']) /
@@ -165,7 +165,7 @@ async function currentPeriodProgress(period, id) {
 	bar.animate(1, { duration: timeRemaining, easing: 'linear' });
 }
 
-async function currentPeriodText(period, id) {
+function currentPeriodText(period, id) {
 	if (period.href) {
 		document.getElementById(id).innerHTML =
 			`<a href="${period.href}" target="_blank">${period['friendly_name']}</a> ends at <b>${timestampToHuman(period['end_timestamp'])}</b> (in <b>${timestampsToLength(Date.now() / 1000, period['end_timestamp'])}</b>).`;
@@ -190,7 +190,7 @@ function timestampsToLength(start, stop) {
 	return `${minutes}m`;
 }
 
-async function generateSchedule(periods, schedule) {
+function generateSchedule(periods, schedule) {
 	let boxes = [];
 	let start_timestamp;
 	let end_timestamp;
@@ -259,11 +259,11 @@ async function generateSchedule(periods, schedule) {
 	};
 }
 
-async function placeBoxes(data, schedule) {
+function placeBoxes(data, schedule) {
 	let periods = data.periods;
-	let box_data = await generateSchedule(periods, schedule);
+	let box_data = generateSchedule(periods, schedule);
 	let div = document.getElementById('schedule');
-	let color = await rgb(data.color);
+	let color = rgb(data.color);
 	div.style.height = `${box_data.height + 70}px`;
 
 	let times = [];
@@ -351,7 +351,7 @@ async function placeBoxes(data, schedule) {
 }
 
 // Detect whether text should be black or white based on the background color
-async function black_or_white(rgb, opacity = 1) {
+function black_or_white(rgb, opacity = 1) {
 	rgb = rgb.replace('rgb(', '[');
 	rgb = rgb.replace(')', ']');
 	let colors = JSON.parse(rgb);
@@ -362,14 +362,14 @@ async function black_or_white(rgb, opacity = 1) {
 	return luma > 128 ? `black` : `white`;
 }
 
-async function updateLocs(data) {
+function updateLocs(data) {
 	let locs_div = document.getElementById('closed');
 	let msg_div = document.getElementById('message');
 	msg_div.innerHTML = data.message;
-	locs_div.innerHTML = await getLocationString(data.closed);
+	locs_div.innerHTML = getLocationString(data.closed);
 }
 
-async function setLinks() {
+function setLinks() {
 	let homepage = document.getElementById('homepage-link');
 	homepage.href = instance_url;
 	document.querySelector('#options').addEventListener('click', function () {
@@ -381,7 +381,7 @@ async function setLinks() {
 	});
 }
 
-async function getLocationString(closed) {
+function getLocationString(closed) {
 	if (closed.length === 0) {
 		return '';
 	} else if (closed.length === 1) {
