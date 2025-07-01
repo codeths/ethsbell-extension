@@ -4,10 +4,11 @@ let wrapper;
 
 let pixelPerMin = 1.5;
 let textColor;
-window.addEventListener('load', (event) => {
+window.addEventListener('load', async (event) => {
 	wrapper = document.getElementById('wrapper');
-	updateFrame(true);
 	window.setInterval(updateFrame, 3000);
+	await loadInstance();
+	await updateFrame(true);
 });
 
 async function getInstance() {
@@ -16,10 +17,14 @@ async function getInstance() {
 	});
 }
 
-async function fetchData() {
-	const timestamp = Math.round(Date.now() / 1000);
+async function loadInstance() {
 	instance = await getInstance();
 	instance_url = instance == 'main' ? 'https://ethsbell.app' : 'https://dayschool.ethsbell.app';
+}
+
+async function fetchData() {
+	const timestamp = Math.round(Date.now() / 1000);
+	await loadInstance();
 	let day = await fetch(`${instance_url}/api/v1/today?timestamp=${timestamp}`);
 	let now = await fetch(`${instance_url}/api/v1/today/now/near?timestamp=${timestamp}`);
 	let schedule = await chrome.storage.local.get(['config']);
