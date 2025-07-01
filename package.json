@@ -1,0 +1,18 @@
+{
+	"name": "ethsbell-extension",
+	"version": "1.0.0",
+	"scripts": {
+		"format": "prettier --write .",
+		"lint": "prettier --check ."
+	},
+	"devDependencies": {
+		"prettier": "^3.6.2"
+	},
+	"prettier": {
+		"useTabs": true,
+		"singleQuote": true,
+		"trailingComma": "es5",
+		"printWidth": 100,
+		"quoteProps": "consistent"
+	}
+}

@@ -1,20 +1,20 @@
 name: Pack
 on:
-    push:
-        branches:
-            - $default-branch
-        tags:
-            - v*
-    workflow_dispatch:
+  push:
+    branches:
+      - $default-branch
+    tags:
+      - v*
+  workflow_dispatch:
 jobs:
-    pack:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - name: Build
-              run: bash build.sh
-            - name: Source
-              uses: actions/upload-artifact@v2
-              with:
-                  name: Source Code
-                  path: out.zip
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: bash build.sh
+      - name: Source
+        uses: actions/upload-artifact@v2
+        with:
+          name: Source Code
+          path: out.zip

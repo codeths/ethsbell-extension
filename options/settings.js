@@ -20,7 +20,7 @@ const banner = document.querySelector('#banner');
 	}
 })();
 
-form.addEventListener('submit', async e => {
+form.addEventListener('submit', async (e) => {
 	e.preventDefault();
 
 	await setNotificationSettings({
@@ -39,27 +39,27 @@ form.addEventListener('submit', async e => {
 
 async function getNotificationSettings() {
 	return new Promise((resolve, reject) => {
-		chrome.storage.sync.get(['enabled', 'offset'], data => resolve(data));
+		chrome.storage.sync.get(['enabled', 'offset'], (data) => resolve(data));
 	});
 }
 
 async function setNotificationSettings(settings) {
-	const {enabled, offset} = settings;
+	const { enabled, offset } = settings;
 	return new Promise((resolve, reject) => {
-		chrome.storage.sync.set({enabled, offset}, () => resolve());
+		chrome.storage.sync.set({ enabled, offset }, () => resolve());
 	});
 }
 
 async function getInstance() {
-	return new Promise(resolve => {
-		chrome.storage.sync.get(['instance'], ({instance}) => resolve(instance || 'main'));
+	return new Promise((resolve) => {
+		chrome.storage.sync.get(['instance'], ({ instance }) => resolve(instance || 'main'));
 	});
 }
 
 async function setInstance() {
 	const instance = document.querySelector('input[name="instance"]:checked').value;
-	return new Promise(resolve => {
-		chrome.storage.sync.set({instance}, resolve);
+	return new Promise((resolve) => {
+		chrome.storage.sync.set({ instance }, resolve);
 	});
 }
 
