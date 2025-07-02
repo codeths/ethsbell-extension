@@ -16,6 +16,7 @@ body::-webkit-scrollbar {
 #current {
 	width: 100%;
 	height: 90%;
+	position: relative;
 }
 #friendly_name {
 	text-align: center;
@@ -148,6 +149,7 @@ a:visited {
 #buttons a {
 	text-decoration: none;
 	padding: 5px;
+	cursor: pointer;
 }
 a {
 	color: inherit;
