@@ -3,7 +3,8 @@
 	"version": "1.0.0",
 	"scripts": {
 		"format": "prettier --write .",
-		"lint": "prettier --check ."
+		"lint": "prettier --check .",
+		"build": "./build.sh"
 	},
 	"devDependencies": {
 		"prettier": "^3.6.2"
