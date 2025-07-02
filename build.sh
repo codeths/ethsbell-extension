@@ -7,6 +7,7 @@ INCLUDES=(
 	"service-worker.js"
 	"manifest.json"
 	"action.html"
+	"LICENSE"
 )
 OUTPUT="build.zip"
 

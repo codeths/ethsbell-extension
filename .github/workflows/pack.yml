@@ -1,20 +1,21 @@
-name: Pack
 on:
   push:
-    branches:
-      - $default-branch
     tags:
-      - v*
-  workflow_dispatch:
+      - 'v*.*.*'
+      - 'b*.*.*'
+
 jobs:
   pack:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Build
-        run: bash build.sh
-      - name: Source
-        uses: actions/upload-artifact@v2
+        run: ./build.sh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.3.2
         with:
-          name: Source Code
-          path: out.zip
+          files: build.zip
+          generate_release_notes: true
+          prerelease: ${{ startsWith( github.ref_name, 'b' ) }}
