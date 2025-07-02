@@ -1,6 +1,6 @@
 html {
 	width: 650px; /* max: 800px */
-	height: 100%; /* max: 600px */
+	/* height: 100%; /* max: 600px */
 	overflow: scroll;
 }
 body {

@@ -67,7 +67,7 @@ async function updateFrame(draw) {
 	nextPeriod(data.now[2], data.schedule);
 	wrapper.style.backgroundColor = rgb(data.day.color);
 	let height = 200 + data.now[1].length * 75;
-	if (data.locations.message != '') {
+	if (data.locations.message) {
 		height += 75;
 	}
 	height += data.locations.closed.length === 0 ? 0 : 75;
@@ -368,10 +368,10 @@ function black_or_white(rgb, opacity = 1) {
 }
 
 function updateLocs(data) {
-	let locs_div = document.getElementById('closed');
-	let msg_div = document.getElementById('message');
-	msg_div.innerHTML = data.message;
-	locs_div.innerHTML = getLocationString(data.closed);
+	if (data.message) {
+		document.getElementById('message').innerHTML = data.message;
+	}
+	document.getElementById('closed').innerHTML = getLocationString(data.closed);
 }
 
 function setLinks() {
