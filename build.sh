@@ -1,12 +1,8 @@
 #!/bin/bash
 
 INCLUDES=(
-	"static"
-	"options"
-	"icons"
-	"service-worker.js"
+	"src"
 	"manifest.json"
-	"action.html"
 	"LICENSE"
 )
 OUTPUT="build.zip"

@@ -126,7 +126,7 @@ async function runNotification(timestamp = Date.now()) {
 	console.log('creating...');
 	chrome.notifications.create('', {
 		type: 'basic',
-		iconUrl: '/icons/icon128.png',
+		iconUrl: '/src/icons/icon128.png',
 		...getNotificationMessage(currentPeriods[0], human_list(periods.map((x) => x.friendly_name))),
 	});
 }
