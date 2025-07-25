@@ -1,3 +1,5 @@
+import { getSyncData, getInstanceDomain } from './static/utils.js';
+
 chrome.runtime.onMessageExternal.addListener(async (message, sender) => {
 	if (message && message.message === 'schedule' && message.data) {
 		try {
@@ -9,19 +11,6 @@ chrome.runtime.onMessageExternal.addListener(async (message, sender) => {
 		} catch {}
 	}
 });
-
-async function getSyncData(name) {
-	let result = await chrome.storage.sync.get();
-	return result[name];
-}
-
-async function getInstanceDomain() {
-	let i = await getSyncData('instance');
-	if (i == 'dayschool') {
-		return 'https://dayschool.ethsbell.app';
-	}
-	return 'https://ethsbell.app';
-}
 
 async function getNotificationOffset() {
 	let enabled = await getSyncData('enabled');

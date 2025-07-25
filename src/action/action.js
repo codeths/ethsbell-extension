@@ -1,3 +1,5 @@
+import { getSyncData, getInstanceDomain } from '../static/utils.js';
+
 let instance = 'main';
 let instance_url;
 let wrapper;
@@ -12,14 +14,12 @@ window.addEventListener('load', async (event) => {
 });
 
 async function getInstance() {
-	return new Promise((resolve) => {
-		chrome.storage.sync.get(['instance'], ({ instance }) => resolve(instance || 'main'));
-	});
+	return getSyncData('instance') || 'main';
 }
 
 async function loadInstance() {
 	instance = await getInstance();
-	instance_url = instance == 'main' ? 'https://ethsbell.app' : 'https://dayschool.ethsbell.app';
+	instance_url = await getInstanceDomain();
 }
 
 async function fetchData() {
