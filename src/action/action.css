@@ -97,13 +97,19 @@ body::-webkit-scrollbar {
 	left: 50%;
 	transform: translate(-50%, 0%);
 	font-size: 125%;
-	border: 1px solid gray;
 	padding-left: 0px 10px;
-	border-radius: 5px;
 	align-content: center;
 	bottom: 10px;
 	text-decoration: none;
-	color: rgb(40, 96, 181);
+	border: 2px solid #007bff;
+	color: #007bff;
+	border-radius: 16px;
+	transition: all 0.25s ease-in-out;
+}
+#view:hover {
+	border-color: transparent;
+	background-color: #007bff;
+	color: white;
 }
 a:visited {
 	color: inherit;
