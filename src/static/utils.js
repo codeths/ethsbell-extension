@@ -1,5 +1,4 @@
 export async function getSyncData(name) {
-	console.log(`getSyncData(${name})`);
 	let result = await chrome.storage.sync.get();
 	return result[name];
 }
