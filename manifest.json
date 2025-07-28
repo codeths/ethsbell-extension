@@ -1,6 +1,6 @@
 {
 	"name": "ETHSBell Beta",
-	"version": "3.1.0",
+	"version": "3.2.0",
 	"manifest_version": 3,
 	"minimum_chrome_version": "95",
 	"background": {
