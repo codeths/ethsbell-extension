@@ -10,12 +10,12 @@
 	"description": "A Browser Extension version of ETHSBell",
 	"homepage_url": "https://ethsbell.app",
 	"icons": {
-		"16": "/src/icons/icon16.png",
-		"48": "/src/icons/icon48.png",
-		"128": "/src/icons/icon128.png"
+		"16": "/src/icons/bell-16.png",
+		"48": "/src/icons/bell-48.png",
+		"128": "/src/icons/bell-128.png"
 	},
 	"action": {
-		"default_icon": "/src/icons/icon128.png",
+		"default_icon": "/src/icons/bell-128.png",
 		"default_title": "ETHSBell",
 		"default_popup": "/src/action/action.html"
 	},
