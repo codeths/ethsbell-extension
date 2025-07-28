@@ -4,9 +4,9 @@ let instance = 'main';
 let instance_url;
 let wrapper;
 
-let pixelPerMin = 1.5;
+const pixelPerMin = 1.5;
 let textColor;
-window.addEventListener('load', async (event) => {
+window.addEventListener('load', async () => {
 	wrapper = document.getElementById('wrapper');
 	window.setInterval(updateFrame, 3000);
 	await loadInstance();
@@ -14,7 +14,7 @@ window.addEventListener('load', async (event) => {
 });
 
 async function getInstance() {
-	return getSyncData('instance') || 'main';
+	return (await getSyncData('instance')) || 'main';
 }
 
 async function loadInstance() {
@@ -25,46 +25,48 @@ async function loadInstance() {
 async function fetchData() {
 	const timestamp = Math.round(Date.now() / 1000);
 	await loadInstance();
-	let day = await fetch(`${instance_url}/api/v1/today?timestamp=${timestamp}`);
-	let now = await fetch(`${instance_url}/api/v1/today/now/near?timestamp=${timestamp}`);
-	let schedule = await chrome.storage.local.get(['config']);
-	let locations = await fetch(`https://s3.codeths.dev/bell/locations/${instance}`, {
+	const day = await fetch(`${instance_url}/api/v1/today?timestamp=${timestamp}`);
+	const now = await fetch(`${instance_url}/api/v1/today/now/near?timestamp=${timestamp}`);
+	const locations = await fetch(`https://s3.codeths.dev/bell/locations/${instance}`, {
 		cache: 'no-cache',
 	});
 	return {
 		day: await day.json(),
 		now: await now.json(),
 		locations: await locations.json(),
-		schedule: schedule.config ? schedule.config.schedule : false,
 	};
 }
 
-function drawFrame(data) {
+function drawFrame(data, preferences) {
 	setLinks();
-	textColor = black_or_white(rgb(data.day.color));
+	textColor = getTextColor(data.day.color);
 	document.getElementById('divider').style.backgroundColor = textColor;
-	placeBoxes(data.day, data.schedule);
+
+	renderSchedulePreview(data.day, preferences);
 }
 
 async function updateFrame(draw) {
+	console.log('updateFrame()');
 	let data;
-	let schedule = await chrome.storage.local.get(['schedule']);
-	if (schedule.schedule && schedule.schedule.updated >= Date.now()) {
-		data = schedule.schedule.data;
+	const { schedule, config: preferences } = await chrome.storage.local.get(['schedule', 'config']);
+	if (schedule && schedule.updated >= Date.now()) {
+		data = schedule.data;
 	} else {
 		data = await fetchData();
+
 		let updateTime = Date.now() + 120000;
 		if (data.now[1][0]) {
 			updateTime = Math.min(Date.now() + 120000, data.now[1][0].end_timestamp * 1000);
 		}
-		chrome.storage.local.set({ schedule: { data: data, updated: updateTime } });
+
+		chrome.storage.local.set({ schedule: { data, updated: updateTime } });
 	}
 	if (draw) {
-		drawFrame(data);
+		drawFrame(data, preferences);
 	}
 	document.getElementById('friendly_name').innerHTML = data.day.friendly_name;
-	currentPeriod(data.now[1], data.schedule);
-	nextPeriod(data.now[2], data.schedule);
+	currentPeriod(data.now[1], preferences?.schedule);
+	nextPeriod(data.now[2], preferences?.schedule);
 	wrapper.style.backgroundColor = rgb(data.day.color);
 	let height = 200 + data.now[1].length * 75;
 	if (data.locations.message) {
@@ -77,9 +79,8 @@ async function updateFrame(draw) {
 	updateLocs(data.locations);
 }
 
-function rgb(color) {
-	const color_list = `${color[0]}, ${color[1]}, ${color[2]}`;
-	return `rgb(${color_list})`;
+function rgb(colors) {
+	return `rgb(${colors.join()})`;
 }
 
 function currentPeriod(periods, schedule) {
@@ -155,11 +156,11 @@ function nextPeriod(period, schedule) {
 }
 
 function currentPeriodProgress(period, id) {
-	let timeRemaining = (period['end_timestamp'] - Date.now() / 1000) * 1000;
-	let percentElapsed =
+	const timeRemaining = (period['end_timestamp'] - Date.now() / 1000) * 1000;
+	const percentElapsed =
 		(Date.now() / 1000 - period['start_timestamp']) /
 		(period['end_timestamp'] - period['start_timestamp']);
-	let bar = new ProgressBar.Circle(`#${id}`, {
+	const bar = new ProgressBar.Circle(`#${id}`, {
 		strokeWidth: 50,
 		easing: 'linear',
 		color: textColor,
@@ -181,14 +182,14 @@ function currentPeriodText(period, id) {
 }
 
 function timestampToHuman(timestamp) {
-	let time = new Date(timestamp * 1000);
+	const time = new Date(timestamp * 1000);
 	return time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 }
 
 function timestampsToLength(start, stop) {
-	let duration = (stop - start) / 60;
-	let hours = Math.floor(duration / 60);
-	let minutes = Math.ceil(duration - hours * 60);
+	const duration = (stop - start) / 60;
+	const hours = Math.floor(duration / 60);
+	const minutes = Math.ceil(duration - hours * 60);
 	if (hours > 0) {
 		return `${hours}h ${minutes}m`;
 	}
@@ -196,6 +197,7 @@ function timestampsToLength(start, stop) {
 }
 
 function generateSchedule(periods, schedule) {
+	console.log('generateSchedule():', schedule);
 	let boxes = [];
 	let start_timestamp;
 	let end_timestamp;
@@ -207,7 +209,7 @@ function generateSchedule(periods, schedule) {
 			end_timestamp = period.end_timestamp;
 		}
 	});
-	let height = ((end_timestamp - start_timestamp) / 60) * pixelPerMin;
+	const height = ((end_timestamp - start_timestamp) / 60) * pixelPerMin;
 	let columns = 1;
 	periods.forEach((period) => {
 		if (period.kind == 'Passing') {
@@ -221,11 +223,13 @@ function generateSchedule(periods, schedule) {
 		} else {
 			prd_name = period.friendly_name;
 		}
-		if (schedule[prd_name] && schedule[prd_name].name != null) {
-			custom_name = ` - ${schedule[prd_name].name}`;
-		}
-		if (schedule[prd_name] && schedule[prd_name].url != null) {
-			url = schedule[prd_name].url;
+		if (schedule && schedule[prd_name]) {
+			if (schedule[prd_name].name != null) {
+				custom_name = ` - ${schedule[prd_name].name}`;
+			}
+			if (schedule[prd_name].url != null) {
+				url = schedule[prd_name].url;
+			}
 		}
 		let prd = {
 			height: ((period.end_timestamp - period.start_timestamp) / 60) * pixelPerMin,
@@ -264,18 +268,18 @@ function generateSchedule(periods, schedule) {
 	};
 }
 
-function placeBoxes(data, schedule) {
-	let periods = data.periods;
-	let box_data = generateSchedule(periods, schedule);
+function renderSchedulePreview({ periods, color: colorRGB }, preferences) {
+	console.log('renderSchedulePreview()');
+	const box_data = generateSchedule(periods, preferences?.schedule);
 	let div = document.getElementById('schedule');
-	let color = rgb(data.color);
+	const color = rgb(colorRGB);
 	div.style.height = `${box_data.height + 70}px`;
 
 	let times = [];
 	let time = new Date(box_data.start * 1000);
-	let end = new Date(box_data.end * 1000);
+	const end = new Date(box_data.end * 1000);
 	while (time.getTime() < end.getTime()) {
-		let initial_time = new Date(time.getTime());
+		const initial_time = new Date(time.getTime());
 		time.setHours(time.getHours() + Math.ceil(time.getMinutes() / 60));
 		time.setMinutes(0, 0, 0);
 		times.push({
@@ -344,7 +348,7 @@ function placeBoxes(data, schedule) {
 		let start = new Date(box_data.start * 1000);
 		bar.style.display = 'none';
 		div.appendChild(bar);
-		let updateBar = window.setInterval(function () {
+		window.setInterval(function () {
 			if (new Date().getTime() < end.getTime() && new Date().getTime() > start.getTime()) {
 				bar.style.top = `${((new Date().getTime() - start.getTime()) / 60000) * pixelPerMin}px`;
 				bar.style.display = '';
@@ -356,22 +360,17 @@ function placeBoxes(data, schedule) {
 }
 
 // Detect whether text should be black or white based on the background color
-function black_or_white(rgb, opacity = 1) {
-	rgb = rgb.replace('rgb(', '[');
-	rgb = rgb.replace(')', ']');
-	let colors = JSON.parse(rgb);
-	let r = colors[0];
-	let g = colors[1];
-	let b = colors[2];
+function getTextColor(rgb) {
+	const [r, g, b] = rgb;
 	const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-	return luma > 128 ? `black` : `white`;
+	return luma > 128 ? 'black' : 'white';
 }
 
-function updateLocs(data) {
-	if (data.message) {
-		document.getElementById('message').innerHTML = data.message;
+function updateLocs({ message, closed }) {
+	if (message) {
+		document.getElementById('message').innerHTML = message;
 	}
-	document.getElementById('closed').innerHTML = getLocationString(data.closed);
+	document.getElementById('closed').innerHTML = getLocationString(closed);
 }
 
 function setLinks() {

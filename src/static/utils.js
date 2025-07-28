@@ -1,6 +1,10 @@
-export async function getSyncData(name) {
-	let result = await chrome.storage.sync.get();
-	return result[name];
+export async function getSyncData(key) {
+	let result = await chrome.storage.sync.get(key);
+	return result[key];
+}
+export async function getLocalData(key) {
+	let result = await chrome.storage.local.get(key);
+	return result[key];
 }
 
 export async function getInstanceDomain() {
