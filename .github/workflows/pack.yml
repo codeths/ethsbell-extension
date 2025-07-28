@@ -10,6 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Rename extension
+        if: ${{ startsWith( github.ref_name, 'b' ) }}
+        run: |
+          cat manifest.json | jq '. + {name: "ETHSBell (beta)"}' > manifest.json.tmp
+          mv manifest.json.tmp manifest.json
+
       - name: Build
         run: ./build.sh
 
