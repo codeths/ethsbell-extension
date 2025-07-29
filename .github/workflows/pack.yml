@@ -15,7 +15,7 @@ jobs:
         run: |
           cat manifest.json | jq '. + {name: "ETHSBell (beta)"}' > manifest.json.tmp
           mv manifest.json.tmp manifest.json
-          cp -r extras/beta-icons/ src/icons
+          cp extras/beta-icons/* src/icons
 
       - name: Build
         run: ./build.sh
