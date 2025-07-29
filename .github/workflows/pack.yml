@@ -13,7 +13,7 @@ jobs:
       - name: Rename extension
         if: ${{ startsWith( github.ref_name, 'b' ) }}
         run: |
-          cat manifest.json | jq '. + {name: "ETHSBell (beta)"}' > manifest.json.tmp
+          cat manifest.json | jq '. + {name: "ETHSBell (beta)"} | .action."default_title" = "ETHSBell (beta)"' > manifest.json.tmp
           mv manifest.json.tmp manifest.json
           cp extras/beta-icons/* src/icons
 
