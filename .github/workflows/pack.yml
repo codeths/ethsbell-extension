@@ -1,20 +1,28 @@
-name: Pack
 on:
-    push:
-        branches:
-            - $default-branch
-        tags:
-            - v*
-    workflow_dispatch:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'b*.*.*'
+
 jobs:
-    pack:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - name: Build
-              run: bash build.sh
-            - name: Source
-              uses: actions/upload-artifact@v2
-              with:
-                  name: Source Code
-                  path: out.zip
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Rename extension
+        if: ${{ startsWith( github.ref_name, 'b' ) }}
+        run: |
+          cat manifest.json | jq '. + {name: "ETHSBell (beta)"} | .action."default_title" = "ETHSBell (beta)"' > manifest.json.tmp
+          mv manifest.json.tmp manifest.json
+          cp extras/beta-icons/* src/icons
+
+      - name: Build
+        run: ./build.sh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.3.2
+        with:
+          files: build.zip
+          generate_release_notes: true
+          prerelease: ${{ startsWith( github.ref_name, 'b' ) }}

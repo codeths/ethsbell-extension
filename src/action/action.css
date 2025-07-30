@@ -1,0 +1,162 @@
+html {
+	width: 650px; /* max: 800px */
+	/* height: 100%; /* max: 600px */
+	overflow: scroll;
+}
+body {
+	margin: 0px;
+	width: 650px; /* max: 800px */
+	overflow: scroll;
+}
+
+body::-webkit-scrollbar {
+	display: none;
+}
+
+#current {
+	width: 100%;
+	height: 90%;
+	position: relative;
+}
+#friendly_name {
+	text-align: center;
+	font-size: 300%;
+	margin: 0px;
+	padding: 4% 0%;
+}
+#next_period {
+	margin-top: 5%;
+}
+.period {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text-align: center;
+	justify-content: center;
+	padding: 2% 5%;
+}
+.periodName {
+	display: inline;
+	vertical-align: middle;
+	font-size: 200%;
+	margin-left: 10px;
+}
+.progress {
+	display: inline;
+	vertical-align: middle;
+	height: 5%;
+	width: 5%;
+}
+#info {
+	height: 10%;
+	width: 100%;
+	text-align: center;
+	font-size: 120%;
+	align-content: center;
+	color: black;
+	background-color: white;
+}
+#wrapper {
+	height: 100%;
+	width: 100%;
+	display: block;
+}
+#schedule {
+	display: block;
+	position: relative;
+}
+.column {
+	display: flex;
+	flex-direction: column;
+	flex-basis: 100%;
+}
+.schedule-period {
+	position: absolute;
+	border-radius: 5px;
+}
+.schedule-period-name {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.schedule-time {
+	margin-top: 0px;
+}
+.schedule-period-name,
+.schedule-time {
+	margin-left: 5px;
+}
+.schedule-key {
+	position: absolute;
+	margin-left: 5px;
+	margin-top: 0px;
+	color: black;
+}
+#view {
+	position: absolute;
+	text-align: center;
+	left: 50%;
+	transform: translate(-50%, 0%);
+	font-size: 125%;
+	padding-left: 0px 10px;
+	align-content: center;
+	bottom: 10px;
+	text-decoration: none;
+	border: 2px solid #007bff;
+	color: #007bff;
+	border-radius: 16px;
+	transition: all 0.25s ease-in-out;
+}
+#view:hover {
+	border-color: transparent;
+	background-color: #007bff;
+	color: white;
+}
+a:visited {
+	color: inherit;
+}
+.bar {
+	position: absolute;
+	width: calc(100% - 20px);
+	left: 10px;
+	height: 3px;
+	border-radius: 1.5px;
+	background-color: rgba(255, 0, 0, 0.5);
+	z-index: 100;
+	transform: translateY(-50%);
+}
+.message {
+	text-align: center;
+	font-size: 150%;
+	margin-top: 2.5%;
+}
+.hide {
+	display: none;
+	background-color: inherit !important;
+}
+#divider {
+	width: 75px;
+	height: 3px;
+	background-color: white;
+	margin: 5px auto;
+}
+.out {
+	text-align: center;
+	font-size: 175%;
+	margin-top: 5%;
+}
+#buttons {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 15px;
+	text-align: right;
+	font-size: 150%;
+}
+#buttons a {
+	text-decoration: none;
+	padding: 5px;
+	cursor: pointer;
+}
+a {
+	color: inherit;
+}

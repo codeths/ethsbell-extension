@@ -1,68 +1,19 @@
 {
 	"name": "ethsbell-extension",
+	"version": "1.0.0",
 	"scripts": {
+		"format": "prettier --write .",
+		"lint": "prettier --check .",
 		"build": "./build.sh"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/chromezoneeths/ethsbell-extension.git"
-	},
-	"bugs": {
-		"url": "https://github.com/chromezoneeths/ethsbell-extension/issues"
-	},
-	"homepage": "https://github.com/chromezoneeths/ethsbell-extension#readme",
 	"devDependencies": {
-		"xo": "^0.46.4"
+		"prettier": "^3.6.2"
 	},
-	"xo": {
-		"envs": [
-			"browser",
-			"webextensions"
-		],
-		"globals": [
-			"display",
-			"getel",
-			"date_from_api",
-			"current_date",
-			"showNowBar",
-			"replace_period",
-			"bytes_to_color",
-			"black_or_white",
-			"period_html",
-			"human_time",
-			"human_time_left",
-			"getNotificationOffset",
-			"get",
-			"didDataChange",
-			"saveLastKnownData",
-			"put_period_to_element",
-			"update_progress_circular",
-			"put_period_to_element",
-			"go",
-			"place_boxes",
-			"getSchedule",
-			"getConfig",
-			"isJSONEqual",
-			"human_list",
-			"plural_suffix",
-			"getInstance",
-			"getInstanceDomain"
-		],
-		"rules": {
-			"camelcase": 0,
-			"no-unused-vars": 0,
-			"unicorn/filename-case": 0,
-			"no-global-assign": 0,
-			"no-alert": 0,
-			"complexity": 0,
-			"unicorn/numeric-separators-style": 0,
-			"no-mixed-operators": 0,
-			"unicorn/prevent-abbreviations": 0,
-			"no-use-extend-native/no-use-extend-native": 0,
-			"no-extend-native": 0,
-			"unicorn/no-document-cookie": 0,
-			"unicorn/no-array-reduce": 0,
-			"unicorn/no-array-for-each": 0
-		}
+	"prettier": {
+		"useTabs": true,
+		"singleQuote": true,
+		"trailingComma": "es5",
+		"printWidth": 100,
+		"quoteProps": "consistent"
 	}
 }
