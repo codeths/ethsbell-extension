@@ -144,15 +144,22 @@ a:visited {
 	font-size: 175%;
 	margin-top: 5%;
 }
-#buttons {
+.buttons {
 	position: absolute;
 	top: 0;
-	right: 0;
 	padding: 15px;
-	text-align: right;
 	font-size: 150%;
 }
-#buttons a {
+#buttons-right {
+	right: 0;
+	text-align: right;
+}
+#buttons-left {
+	left: 0;
+	text-align: left;
+}
+
+.buttons a {
 	text-decoration: none;
 	padding: 5px;
 	cursor: pointer;
